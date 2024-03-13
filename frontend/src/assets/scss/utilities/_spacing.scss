@@ -1,0 +1,34 @@
+/*=========
+*  Spacing
+==========*/
+
+$spaceTypes: (
+  'p': 'padding',
+  'm': 'margin'
+);
+
+$orientations: (
+  '': '',
+  'l': '-left',
+  'r': '-right',
+  't': '-top',
+  'b': '-bottom',
+  'x': '-inline',
+  'y': '-block'
+);
+
+@for $i from 0 through 20 {
+  @each $sChar, $type in $spaceTypes {
+    @each $oChar, $orientation in $orientations {
+      .#{$sChar}#{$oChar}-#{$i} {
+        #{$type}#{$orientation}: $i * 0.25rem;
+      }
+    }
+  }
+}
+
+@each $oChar, $orientation in $orientations {
+  .m#{$oChar}-auto {
+    margin#{$orientation}: auto;
+  }
+}

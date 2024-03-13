@@ -1,0 +1,55 @@
+.text {
+  // Text align
+  &-center {
+    text-align: center;
+  }
+  &-start {
+    text-align: start;
+  }
+  &-end {
+    text-align: end;
+  }
+  // Word break
+  &-break {
+    word-break: break-word;
+    word-wrap: break-word;
+  }
+  // Text transform
+  &-uppercase {
+    text-transform: uppercase;
+  }
+  &-lowercase {
+    text-transform: lowercase;
+  }
+  &-capitalize {
+    text-transform: capitalize;
+  }
+  // Text style
+  &-bold {
+    font-weight: bold;
+  }
+  &-italic {
+    font-style: italic;
+  }
+  &-underline {
+    text-decoration: underline;
+  }
+}
+
+// Font sizes
+
+$fontSizes: (
+  1: clamp(2.5rem, 1rem + 4vw, 6.5rem),
+  2: clamp(2.5rem, 1.4vw + 1.2rem, 3rem),
+  3: 3.5rem,
+  4: 2.6rem,
+  5: 2rem,
+  6: 1.6rem,
+  normal: 1rem
+);
+
+@each $size, $value in $fontSizes {
+  .fs-#{$size} {
+    font-size: $value;
+  }
+}

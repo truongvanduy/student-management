@@ -1,0 +1,26 @@
+@use '../utilities/variables' as *;
+
+:root {
+  --catalog-shape-xl: 1.75rem;
+  --catalog-shape-l: 1rem;
+  --catalog-shape-m: 0.75rem;
+  --catalog-shape-s: 0.5rem;
+  --catalog-shape-xs: 0.25rem;
+  --catalog-spacing-xl: 1.75rem;
+  --catalog-spacing-l: 1rem;
+  --catalog-spacing-m: 0.75rem;
+  --catalog-spacing-s: 0.5rem;
+  --catalog-top-app-bar-height: calc(3rem + 2 * var(--catalog-spacing-m));
+  scroll-padding-block-start: calc(
+    var(--catalog-top-app-bar-height) + var(--catalog-top-app-bar-padding-block) * 2
+  );
+
+  @media screen and (max-width: $menu-breakpoint) {
+    --catalog-display-xl-font-size: 3.4375rem;
+    --catalog-title-l-font-size: 1rem;
+    --catalog-body-l-font-size: 0.875rem;
+    --catalog-body-m-font-size: 0.75rem;
+    --catalog-spacing-xl: 1rem;
+    --catalog-spacing-l: 0.75rem;
+  }
+}

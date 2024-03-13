@@ -1,0 +1,8 @@
+@use '@/assets/scss/vendors/google-fonts' as *;
+
+body {
+  font-family: var(--md-ref-typeface-plain);
+  color: var(--md-sys-color-on-surface);
+  font-size: 1rem;
+  line-height: 1.5;
+}

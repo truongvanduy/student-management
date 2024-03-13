@@ -1,0 +1,55 @@
+@use '../utilities/variables' as *;
+
+.main {
+  display: flex;
+}
+
+.pane {
+  max-height: 100%;
+  height: calc(100dvh - var(--header-height) - var(--content-margin));
+  overflow: auto;
+
+  background-color: var(--md-sys-color-surface-container-lowest);
+  background-color: var(--md-sys-color-surface);
+  margin: 0 var(--content-margin) var(--content-margin) 0;
+
+  border-radius: var(--catalog-shape-xl);
+  box-shadow: rgba(99, 99, 99, 0.05) 0px 2px 8px 0px;
+  flex: 1;
+}
+
+@media screen and (max-width: $menu-breakpoint) {
+  .pane {
+    margin-block-end: var(--content-margin);
+    margin-inline: var(--content-margin);
+  }
+}
+
+.scroll-wrapper {
+  overflow-y: scroll;
+  max-height: 100%;
+  border-radius: inherit;
+}
+
+.content {
+  padding: var(--catalog-spacing-xl);
+}
+
+.toggle-menu {
+  display: none;
+}
+
+@media screen and (width < $menu-breakpoint) {
+  .main {
+    grid-template-columns: 1fr;
+  }
+
+  .toggle {
+    &-menu {
+      display: inline-flex;
+    }
+    &-expand {
+      display: none;
+    }
+  }
+}

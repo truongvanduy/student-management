@@ -1,0 +1,13 @@
+@use '../utilities/variables' as *;
+
+.search {
+  --_search-max-width: var(--search-max-width, 25rem);
+  --_input-min-width: var(--input-min-width, 20ch);
+
+  width: min(var(--_search-max-width), 100%);
+  --md-outlined-text-field-container-shape: 1.7rem;
+  & > * {
+    display: block;
+    min-width: var(--_input-min-width);
+  }
+}

@@ -1,0 +1,21 @@
+// As custom properties are not supported in @media queries, Sass variables are used to define the breakpoint.
+$menu-breakpoint: 64em;
+
+:root {
+  /*** Typography ***/
+
+  /*** Shapes ***/
+
+  /*** Layout spacing ***/
+  --navigation-expanded-width: 18.75rem;
+  --navigation-collapsed-width: 5.5rem;
+  --header-height: 5rem;
+  --content-margin: 1rem;
+  // Search bar
+  --search-max-width: 25rem;
+  --input-min-width: 10rem;
+
+  /*** Transtion ***/
+  --transition-time: 0.2s;
+  --transtion-timing-function: linear;
+}
