@@ -1,10 +1,28 @@
+require('dotenv').config();
+
+const { PORT, HOST, USER, PASSWORD, DB, dialect } = process.env;
+
+if (!HOST || !USER || !PASSWORD || !DB || !dialect) {
+  throw new Error('Missing required environment variable');
+}
+
 const config = {
   app: {
-    port: process.env.PORT || 3000,
+    PORT: process.env.PORT || 3000,
   },
   db: {
-    uri:
-      process.env.MONGODB_URI || 'mongodb://localhost:27017/ct449_book_rentals',
+    PORT,
+    HOST,
+    USER,
+    PASSWORD,
+    DB,
+    dialect,
+    pool: {
+      max: 5,
+      min: 0,
+      acquire: 30000,
+      idle: 10000,
+    },
   },
 };
 

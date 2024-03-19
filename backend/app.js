@@ -4,29 +4,42 @@ const cors = require('cors');
 const router = require('./src/routes');
 const ApiError = require('./src/api-error');
 const cookieParser = require('cookie-parser');
+const { sequelize } = require('./src/utils/db.util');
 // const { checkUser } = require('./src/middleware/auth.middleware');
 
 const app = express();
 
 // middleware
-// app.use(morgan('dev'));
-// app.use(cors());
-// app.use(cookieParser());
-// app.use(express.urlencoded({ extended: true }));
-// app.use(express.static('public'));
+app.use(morgan('dev'));
+app.use(cors());
+app.use(cookieParser());
+app.use(express.urlencoded({ extended: true }));
+app.use(express.static('public'));
 // app.use(express.json());
 
 // app.get('*', checkUser);
-app.use(router);
+// app.use(router);
 
 // Handle 404 response
 
-app.use((req, res, next) => {
-  return next(new ApiError(404, 'Resource not found.'));
+app.get('/', async (_req, res, next) => {
+  try {
+    await sequelize.authenticate();
+
+    const associations = require('./src/models/associations');
+
+    sequelize.sync({ alter: true });
+
+    res.send('Connection has been established successfully.');
+  } catch (error) {
+    return next(
+      new ApiError(500, 'Database connection error. ' + error.message)
+    );
+  }
 });
 
-app.get('/', (req, res) => {
-  res.send('Hello World!');
+app.use((req, res, next) => {
+  return next(new ApiError(404, 'Resource not found.'));
 });
 
 // define error-handling middleware last, after other app.use() and routes calls
