@@ -1,3 +1,4 @@
+// @media (prefers-color-scheme: dark) {
 :root:has(.wrapper.dark) {
   --md-sys-color-primary: rgb(166 200 255);
   --md-sys-color-surface-tint: rgb(166 200 255);
@@ -49,3 +50,4 @@
   --md-sys-color-surface-container-high: rgb(40 42 47);
   --md-sys-color-surface-container-highest: rgb(50 53 58);
 }
+// }
