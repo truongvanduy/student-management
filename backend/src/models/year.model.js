@@ -7,7 +7,7 @@ const Year = sequelize.define('Year', {
     autoIncrement: true,
   },
   year: {
-    type: DataTypes.INTEGER,
+    type: DataTypes.STRING,
     allowNull: false,
   },
   startDate: {
