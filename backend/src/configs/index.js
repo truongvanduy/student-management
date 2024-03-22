@@ -1,8 +1,17 @@
 require('dotenv').config();
 
-const { PORT, HOST, USER, PASSWORD, DB, dialect } = process.env;
+const { PORT, HOST, USER, PASSWORD, DB, dialect, SALT_ROUNDS, JWT_SECRET } =
+  process.env;
 
-if (!HOST || !USER || !PASSWORD || !DB || !dialect) {
+if (
+  !HOST ||
+  !USER ||
+  !PASSWORD ||
+  !DB ||
+  !dialect ||
+  !SALT_ROUNDS ||
+  !JWT_SECRET
+) {
   throw new Error('Missing required environment variable');
 }
 
@@ -23,6 +32,12 @@ const config = {
       acquire: 30000,
       idle: 10000,
     },
+  },
+  bcrypt: {
+    SALT_ROUNDS: parseInt(SALT_ROUNDS),
+  },
+  jwt: {
+    JWT_SECRET: process.env.JWT_SECRET,
   },
 };
 

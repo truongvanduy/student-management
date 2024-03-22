@@ -1,4 +1,5 @@
 const { sequelize, DataTypes } = require('../utils/db.util');
+const hash_passwordUtil = require('../utils/hash_password.util');
 
 const Student = sequelize.define('Student', {
   id: {
@@ -22,22 +23,30 @@ const Student = sequelize.define('Student', {
     type: DataTypes.STRING,
     allowNull: false,
   },
-  phoneNumber: {
-    type: DataTypes.STRING,
-    allowNull: true,
-  },
   email: {
     type: DataTypes.STRING,
     allowNull: true,
   },
-  parentGuardianName: {
+  phoneNumber: {
     type: DataTypes.STRING,
     allowNull: true,
   },
-  parentGuardianContact: {
+  password: {
     type: DataTypes.STRING,
-    allowNull: true,
+    allowNull: false,
   },
 });
+
+Student.addHook('beforeCreate', async (student, options) => {
+  student.password = await hash_passwordUtil(student.password);
+});
+
+Student.addHook('beforeBulkCreate', async (students, options) => {
+  for (const student of students) {
+    student.password = await hash_passwordUtil(student.password);
+  }
+});
+
+Student.sync();
 
 module.exports = Student;

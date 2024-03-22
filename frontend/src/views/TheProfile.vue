@@ -5,6 +5,7 @@ import { onMounted, ref } from 'vue'
 const student = ref({})
 
 onMounted(async () => {
+  
   student.value = await studentService.get('1')
 })
 </script>

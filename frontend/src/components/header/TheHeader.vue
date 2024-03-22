@@ -1,9 +1,12 @@
 <script setup>
 import SearchBar from './SearchBar.vue'
 import NavigationButton from '../navigation/NavigationButton.vue'
-import MdIconButton from '../buttons/MdIconButton.vue'
 import ThemePicker from './ThemePicker.vue'
 import UserMenu from './UserMenu.vue'
+import LogoWithText from '../logos/LogoWithText.vue'
+import { computed } from 'vue'
+
+const user = computed(() => JSON.parse(localStorage.getItem('user')))
 </script>
 
 <template>
@@ -21,9 +24,9 @@ import UserMenu from './UserMenu.vue'
       <!-- Logo -->
       <div class="logo">
         <router-link to="/">
-          <md-icon-button>
-            <md-icon class="material-symbols-rounded">home</md-icon>
-          </md-icon-button>
+          <div class="logo">
+            <LogoWithText />
+          </div>
         </router-link>
       </div>
     </div>
@@ -31,7 +34,17 @@ import UserMenu from './UserMenu.vue'
     <SearchBar />
     <!-- End -->
     <div class="header-end">
-      <UserMenu />
+      <!-- Sign in button -->
+      <router-link
+        class="header-sign-in"
+        :to="{ name: 'login.email' }"
+      >
+        <md-filled-button v-if="!user"> Đăng nhập </md-filled-button>
+      </router-link>
+
+      <!-- User menu -->
+      <UserMenu v-if="user" />
+      <!-- Theme picker -->
       <ThemePicker />
     </div>
   </header>
