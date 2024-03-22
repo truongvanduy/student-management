@@ -42,6 +42,9 @@ img,
 picture,
 svg,
 video {
-  display: block;
+  vertical-align: middle;
   max-width: 100%;
+  font-style: italic;
+  height: auto;
+  background-repeat: no-repeat;
 }
