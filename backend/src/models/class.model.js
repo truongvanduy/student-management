@@ -15,10 +15,6 @@ const Class = sequelize.define('class', {
     type: DataTypes.INTEGER,
     primaryKey: true,
   },
-  name: {
-    type: DataTypes.STRING,
-    allowNull: false,
-  },
   numberOfStudents: {
     type: DataTypes.INTEGER,
     allowNull: true,
@@ -36,5 +32,15 @@ Grade.hasMany(Class, { foreignKey: 'gradeId' });
 Class.belongsTo(Grade, { foreignKey: 'gradeId' });
 
 Class.sync();
+
+// const queryInterface = sequelize.getQueryInterface();
+
+// queryInterface.addConstraint('class', {
+//   fields: ['grade_id', 'year_id', 'order'],
+//   type: 'unique',
+//   name: 'class_grade_id_year_id_order_unique',
+// });
+
+// Class.sync({ alter: true });
 
 module.exports = Class;
