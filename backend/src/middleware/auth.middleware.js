@@ -1,7 +1,6 @@
 const jwt = require('jsonwebtoken');
 const ApiError = require('../api-error');
 const config = require('../configs');
-ApiError = require('../api-error');
 const JWT_SECRET = config.jwt.JWT_SECRET;
 
 const requireAuth = (req, res, next) => {
