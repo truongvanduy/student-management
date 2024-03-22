@@ -20,4 +20,6 @@ const Year = sequelize.define('Year', {
   },
 });
 
+Year.sync();
+
 module.exports = Year;

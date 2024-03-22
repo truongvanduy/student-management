@@ -15,4 +15,6 @@ const Grade = sequelize.define('Grade', {
   },
 });
 
+Grade.sync();
+
 module.exports = Grade;

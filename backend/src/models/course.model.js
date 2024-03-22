@@ -12,4 +12,6 @@ const Course = sequelize.define('course', {
   },
 });
 
+Course.sync();
+
 module.exports = Course;

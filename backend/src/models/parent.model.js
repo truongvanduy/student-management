@@ -1,4 +1,5 @@
 const { sequelize, DataTypes } = require('../utils/db.util');
+const Student = require('./student.model');
 
 const Parent = sequelize.define(
   'parent',
@@ -22,5 +23,10 @@ const Parent = sequelize.define(
     },
   }
 );
+
+Student.hasMany(Parent, { foreignKey: 'studentId' });
+Parent.belongsTo(Student, { foreignKey: 'studentId' });
+
+Parent.sync();
 
 module.exports = Parent;

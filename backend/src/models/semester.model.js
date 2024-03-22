@@ -15,4 +15,6 @@ const Semester = sequelize.define('Semester', {
   },
 });
 
+Semester.sync();
+
 module.exports = Semester;
