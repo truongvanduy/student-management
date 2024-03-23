@@ -9,6 +9,14 @@ class StudentService {
     return await this.api.get(`/student?email=${email}`)
   }
 
+  async getProfile(id) {
+    return (await this.api.get(`/student/profile/${id}`)).data
+  }
+
+  async getScores(semester) {
+    return (await this.api.get(`/student/score?semester=${semester}`)).data
+  }
+
   async login(data) {
     return await this.api.post(`/student/login`, data)
   }

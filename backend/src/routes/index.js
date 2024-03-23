@@ -1,6 +1,8 @@
 const express = require('express');
 const studentController = require('../controllers/student.controller');
-const { requireAuth } = require('../middleware/auth.middleware');
+const { requireAuth, checkStudent } = require('../middleware/auth.middleware');
+const scoreController = require('../controllers/score.controller');
+const courseController = require('../controllers/course.controller');
 
 const router = express.Router();
 
@@ -13,5 +15,13 @@ router.route('/api/student/logout').post(studentController.logout);
 router
   .route('/api/student/profile/:id')
   .get(requireAuth, studentController.show);
+
+// Score
+router
+  .route('/api/student/score')
+  .get(requireAuth, checkStudent, scoreController.show);
+
+// Courses
+router.route('/api/courses').get(requireAuth, courseController.show);
 
 module.exports = router;

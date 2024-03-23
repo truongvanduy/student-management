@@ -11,7 +11,7 @@ const Score = sequelize.define('score', {
     autoIncrement: true,
   },
   score: {
-    type: DataTypes.INTEGER,
+    type: DataTypes.DECIMAL(3, 1),
     allowNull: false,
   },
   type: {
@@ -32,6 +32,6 @@ Score.belongsTo(Course, { foreignKey: 'courseId' });
 Student.hasMany(Score, { foreignKey: 'studentId' });
 Score.belongsTo(Student, { foreignKey: 'studentId' });
 
-Score.sync();
+Score.sync({ alter: true });
 
 module.exports = Score;

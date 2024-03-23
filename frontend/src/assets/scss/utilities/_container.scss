@@ -1,5 +1,5 @@
 .container {
-  --content-margin: 0rem;
+  --content-margin: 1rem;
   --content-max-width: var(--container-width);
 
   width: min(calc(100% - 2 * var(--content-margin, 1rem)), var(--content-max-width, 60rem));
