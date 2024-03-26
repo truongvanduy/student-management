@@ -3,6 +3,7 @@ const studentController = require('../controllers/student.controller');
 const { requireAuth, checkStudent } = require('../middleware/auth.middleware');
 const scoreController = require('../controllers/score.controller');
 const courseController = require('../controllers/course.controller');
+const yearController = require('../controllers/year.controller');
 
 const router = express.Router();
 
@@ -23,5 +24,10 @@ router
 
 // Courses
 router.route('/api/courses').get(requireAuth, courseController.show);
+
+// Year
+router
+  .route('/api/year/student')
+  .get(requireAuth, checkStudent, yearController.getStudentYear);
 
 module.exports = router;

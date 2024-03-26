@@ -13,8 +13,8 @@ class StudentService {
     return (await this.api.get(`/student/profile/${id}`)).data
   }
 
-  async getScores(semester) {
-    return (await this.api.get(`/student/score?semester=${semester}`)).data
+  async getScores(filter) {
+    return (await this.api.get(`/student/score`, { params: filter })).data
   }
 
   async login(data) {

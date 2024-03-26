@@ -33,11 +33,23 @@ module.exports = async function initData(_req, _res, next) {
     // console.log('Course data has been initialized successfully.');
 
     // const Year = require('../models/year.model');
-    // Year.create({
-    //   year: '2022-2023',
-    //   startDate: '2022-08-01',
-    //   endDate: '2023-05-28',
-    // });
+    // Year.bulkCreate([
+    //   {
+    //     year: '2022-2022',
+    //     startDate: '2021-08-01',
+    //     endDate: '2022-05-28',
+    //   },
+    //   {
+    //     year: '2022-2023',
+    //     startDate: '2022-08-01',
+    //     endDate: '2023-05-28',
+    //   },
+    //   {
+    //     year: '2023-2024',
+    //     startDate: '2022-08-01',
+    //     endDate: '2023-05-28',
+    //   },
+    // ]);
     // Year.sync();
 
     // const Semester = require('../models/semester.model');
@@ -58,8 +70,6 @@ module.exports = async function initData(_req, _res, next) {
     // Class.bulkCreate(classData);
     // Class.sync();
     // console.log('Class data has been initialized successfully.');
-
-    // const Score = require('../models/score.model');
 
     // const StudentClass = require('../models/student_class.model');
     // const stdClassData = require('../utils/data/assignClass');
