@@ -1,6 +1,7 @@
 const student = require('../utils/data/student');
 const { sequelize, DataTypes } = require('../utils/db.util');
 const Class = require('./class.model');
+const Grade = require('./grade.model');
 const Student = require('./student.model');
 
 const StudentClass = sequelize.define('student_class', {
@@ -25,6 +26,8 @@ const StudentClass = sequelize.define('student_class', {
     primaryKey: true,
   },
 });
+
+StudentClass.belongsTo(Grade, { foreignKey: 'gradeId' });
 
 // const queryInterface = sequelize.getQueryInterface();
 

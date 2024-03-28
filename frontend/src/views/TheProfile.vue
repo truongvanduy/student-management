@@ -1,29 +1,63 @@
 <script setup>
 import studentService from '@/services/student.service'
 import { onMounted, ref } from 'vue'
+import InfoGroup from '../components/profiles/InfoGroup.vue'
 
 const student = ref({})
+const basicInfo = ref([])
+const contactInfo = ref([])
 
 onMounted(async () => {
-  
-  student.value = await studentService.get('1')
+  try {
+    const { id } = JSON.parse(localStorage.getItem('student'))
+    student.value = await studentService.getProfile(id)
+    console.log(student.value)
+
+    basicInfo.value = [
+      { key: 'Họ và tên', value: student.value.lastName + ' ' + student.value.firstName },
+      { key: 'Ngày sinh', value: student.value.dateOfBirth },
+      { key: 'Giới tính', value: 'Nam' },
+      { key: 'Lớp', value: student.value.className },
+      { key: 'Địa chỉ', value: student.value.address }
+    ]
+
+    contactInfo.value = [
+      { key: 'Email', value: student.value.email },
+      {
+        key: 'Số điện thoại',
+        value: student.value.phoneNumber,
+        hasAction: true,
+        actionName: 'Chỉnh sửa',
+        action: () => alert('Ai cho sửa')
+      }
+    ]
+  } catch (error) {
+    console.error(error)
+  }
 })
 </script>
 
 <template>
-  <h1 class="fs-1">Thông tin học sinh</h1>
-  <div class="student">
-    <p class="student-item">
-      <strong>Họ và tên: </strong>
-      <span>{{ student.lastName + ' ' + student.firstName }}</span>
-    </p>
-    <p class="student-item">
-      <strong>Ngày sinh: </strong>
-      <span>{{ student.dateOfBirth }}</span>
-    </p>
-    <p class="student-item">
-      <strong>Địa chỉ: </strong>
-      <span>{{ student.address }}</span>
-    </p>
+  <div class="student flow container">
+    <h1 class="fs-2">Thông tin học sinh</h1>
+    <div class="student-info flow fs-6">
+      <InfoGroup
+        title="Thông tin cơ bản"
+        :items="basicInfo"
+      />
+      <!-- Contact info -->
+      <InfoGroup
+        title="Thông tin liên hệ"
+        :items="contactInfo"
+      />
+    </div>
   </div>
 </template>
+
+<style lang="scss">
+.student-info {
+  & > * {
+    --flow-spacer: 2em;
+  }
+}
+</style>

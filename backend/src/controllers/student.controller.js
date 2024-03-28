@@ -1,18 +1,44 @@
 const jwt = require('jsonwebtoken');
 const ApiError = require('../api-error');
 const Student = require('../models/student.model');
+const StudentClass = require('../models/student_class.model');
 const bcrypt = require('bcrypt');
 const { createToken, maxAge } = require('../utils/token.util');
+const Class = require('../models/class.model');
+const Grade = require('../models/grade.model');
+const { raw } = require('express');
 
 module.exports = {
   async show(req, res, next) {
     try {
       const id = req.params.id;
-      const student = await Student.findByPk(id);
+      const student = await Student.findByPk(id, {
+        attributes: [
+          'firstName',
+          'lastName',
+          'email',
+          'phoneNumber',
+          'address',
+          'dateOfBirth',
+        ],
+        raw: true,
+      });
       if (student == null) {
         return next(new ApiError(404, 'Student not found.'));
       }
-      return res.send(student);
+
+      const studentClass = await StudentClass.findOne({
+        where: { studentId: id },
+        order: [['yearId', 'DESC']],
+        include: [Grade],
+      });
+
+      const response = {
+        ...student,
+        className: `${studentClass.Grade.gradeLevel}.${studentClass.classOrder}`,
+      };
+
+      return res.send(response);
     } catch (error) {
       return next(
         new ApiError(
