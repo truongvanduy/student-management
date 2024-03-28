@@ -6,7 +6,7 @@ import { computed, onMounted, ref, watchEffect } from 'vue'
 import ScoreResult from '../components/score_view/ScoreResult.vue'
 
 const years = ref([])
-const activeYear = ref(1)
+const activeYear = ref()
 
 onMounted(async () => {
   try {
@@ -20,19 +20,15 @@ onMounted(async () => {
 
 const courses = ref([])
 const response = ref([])
-const groupScores = ref([])
-const firstSemesterAvg = ref([])
-const secondSemesterAvg = ref([])
-const wholeYearAvg = ref([])
 const errorMessage = ref('')
-const activeTab = ref(null)
+const semester = ref(1)
 const loading = ref(true)
 
 const filter = computed(() => {
   const filter = {
     yearId: activeYear.value
   }
-  if (activeTab.value === 1) {
+  if (semester.value === 1) {
     filter.semesterId = 1
   }
   return filter
@@ -43,22 +39,13 @@ watchEffect(async () => {
     loading.value = true
     response.value = await studentService.getScores(filter.value)
     courses.value = await courseService.getAll()
-
-    groupScores.value = response.value.groupScores
-    firstSemesterAvg.value = response.value.firstSemesterAvg
-    secondSemesterAvg.value = response.value?.secondSemesterAvg
-    wholeYearAvg.value = response.value?.wholeYearAvg
+    console.log(response.value.firstSemesterTitle)
 
     errorMessage.value = ''
     loading.value = false
   } catch (error) {
     console.error(error)
     errorMessage.value = error.response.data.message
-
-    groupScores.value = []
-    firstSemesterAvg.value = []
-    secondSemesterAvg.value = []
-    wholeYearAvg.value = []
 
     loading.value = false
   }
@@ -67,7 +54,10 @@ watchEffect(async () => {
 </script>
 
 <template>
-  <div class="container">
+  <div
+    class="container score-view"
+    style="--content-max-width: 90rem"
+  >
     <h1 class="fs-2">Điểm số</h1>
     <div
       style="display: flex"
@@ -97,13 +87,13 @@ watchEffect(async () => {
         id="semester-1-tab"
         aria-controls="semester-1-panel"
         active
-        @click="activeTab = 1"
+        @click="semester = 1"
         >Học kì 1</md-secondary-tab
       >
       <md-secondary-tab
         id="semester-2-tab"
         aria-controls="semester-2-panel"
-        @click="activeTab = 2"
+        @click="semester = 2"
         >Học kì 2 & Cả năm</md-secondary-tab
       >
     </md-tabs>
@@ -116,22 +106,16 @@ watchEffect(async () => {
 
     <!-- Score table -->
     <ScoreResult
-      :groupScores="groupScores"
+      v-if="!loading && response.groupScores.length > 0"
+      :scores="response"
       :loading="loading"
       :courses="courses"
-      :firstSemesterAvg="firstSemesterAvg"
-      :secondSemesterAvg="secondSemesterAvg"
-      :wholeYearAvg="wholeYearAvg"
-      v-model:activeTab="activeTab"
+      :first-semester-results="response?.firstSemesterTitle"
+      :second-semester-results="response?.secondSemesterTitle"
+      v-model:semester="semester"
       v-model:errorMessage="errorMessage"
     />
   </div>
 </template>
 
-<style lang="scss" src="../assets/scss/components/_table.scss">
-.score-table {
-  width: fit-content;
-  margin-left: auto;
-  margin-right: auto;
-}
-</style>
+<style lang="scss" src="../assets/scss/components/_table.scss"></style>
