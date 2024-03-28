@@ -1,6 +1,5 @@
 <script setup>
 import { ref } from 'vue'
-import MenuItem from './MenuItem.vue'
 import MdIconButton from '../buttons/MdIconButton.vue'
 
 defineProps({
@@ -12,11 +11,6 @@ defineProps({
   anchorId: {
     type: String,
     required: true
-  },
-  menuItems: {
-    type: Array,
-    required: true,
-    default: () => []
   }
 })
 
@@ -41,14 +35,7 @@ const toggleMenu = () => {
       ref="menuEl"
       :anchor="anchorId"
     >
-      <MenuItem
-        v-for="(item, index) in menuItems"
-        :key="index"
-        :name="item.name"
-        :icon="item.icon || undefined"
-        :url="item.url"
-        :icon-style="item.iconStyle || 'outlined'"
-      ></MenuItem>
+      <slot></slot>
     </md-menu>
   </span>
 </template>

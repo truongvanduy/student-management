@@ -7,9 +7,14 @@ import { useMenuStore } from '@/stores/MenuStore'
 
 const navItems = ref([
   {
-    name: 'Dashboard',
-    icon: 'dashboard',
+    name: 'Thông tin cá nhân',
+    icon: 'person',
     url: '/'
+  },
+  {
+    name: 'Điểm số',
+    icon: 'bar_chart',
+    url: '/scores'
   },
   {
     name: 'Settings',

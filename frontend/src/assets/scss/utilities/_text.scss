@@ -41,15 +41,21 @@
 $fontSizes: (
   1: clamp(2.5rem, 1rem + 4vw, 6.5rem),
   2: clamp(2.5rem, 1.4vw + 1.2rem, 3rem),
-  3: 3.5rem,
-  4: 2.6rem,
-  5: 2rem,
-  6: 1.6rem,
+  3: 2.1rem,
+  4: 1.7rem,
+  5: 1.4rem,
+  6: 1.2rem,
   normal: 1rem
 );
 
 @each $size, $value in $fontSizes {
   .fs-#{$size} {
     font-size: $value;
+  }
+}
+
+@for $i from 3 through 9 {
+  .fw-#{$i*100} {
+    font-weight: $i * 100;
   }
 }

@@ -10,5 +10,13 @@
   &-start {
     display: flex;
     align-items: center;
+    column-gap: calc((80px - 48px) / 2 + 8px);
   }
+  &-sign-in {
+    margin-right: 1rem;
+  }
+}
+
+.logo {
+  width: 150px;
 }

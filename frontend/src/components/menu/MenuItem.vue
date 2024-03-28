@@ -21,22 +21,17 @@ defineProps({
 })
 </script>
 <template>
-  <router-link
-    :to="url"
-    tabindex="-1"
-  >
-    <md-menu-item>
-      <div
-        v-if="icon"
-        slot="start"
-      >
-        <MdIcon :style="icon !== '' && iconStyle">
-          {{ icon }}
-        </MdIcon>
-      </div>
-      <div slot="headline">{{ name }}</div>
-    </md-menu-item>
-  </router-link>
+  <md-menu-item>
+    <div
+      v-if="icon"
+      slot="start"
+    >
+      <MdIcon :style="icon !== '' && iconStyle">
+        {{ icon }}
+      </MdIcon>
+    </div>
+    <div slot="headline">{{ name }}</div>
+  </md-menu-item>
 </template>
 
 <style>

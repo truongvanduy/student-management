@@ -1,35 +1,39 @@
 <script setup>
-import TheNavigation from './components/navigation/TheNavigation.vue'
-import TheHeader from './components/header/TheHeader.vue'
-import { useThemeStore } from './stores/ThemeStore'
-import { storeToRefs } from 'pinia'
+import { ref, shallowRef, watch } from 'vue'
+import DefaultLayout from './layouts/DefaultLayout.vue'
+import { useRoute } from 'vue-router'
 
-const themeStore = useThemeStore()
-const { theme } = storeToRefs(themeStore)
+const route = useRoute()
+const layout = shallowRef()
+
+const isLoading = ref(false)
+
+watch(
+  () => route?.meta?.layout,
+  async (metaLayout) => {
+    isLoading.value = true
+    try {
+      const component = metaLayout && (await import(`@/layouts/${metaLayout}.vue`))
+
+      layout.value = component?.default || DefaultLayout
+    } catch (error) {
+      layout.value = DefaultLayout
+    }
+
+    isLoading.value = false
+  },
+  { immediate: true }
+)
 </script>
 
 <template>
-  <div
-    class="wrapper"
-    :class="theme"
+  <div v-if="isLoading">Loading...</div>
+  <component
+    v-else
+    :is="layout"
   >
-    <TheHeader />
-    <main class="main">
-      <TheNavigation />
-      <!-- <TheContent /> -->
-      <div class="pane">
-        <div class="scroll-wrapper">
-          <div class="content">
-            <router-view />
-          </div>
-        </div>
-      </div>
-    </main>
-  </div>
+    <router-view />
+  </component>
 </template>
 
-<style>
-md-list div[slot='headline'] {
-  font-weight: 900;
-}
-</style>
+<style lang="scss" scoped></style>
