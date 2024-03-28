@@ -14,8 +14,7 @@ module.exports = {
         return next(new ApiError(404, 'Unauthorized'));
       }
 
-      const { yearId, semester } = req.query;
-      // console.log(req.query);
+      const { yearId, semesterId } = req.query;
 
       // Find years when student enroll in
       const scoreYears = await Score.findAll({
@@ -38,12 +37,12 @@ module.exports = {
       const filter = {
         yearId: parseInt(yearId),
       };
-      if (semester) {
-        const intSemester = parseInt(semester);
-        if (intSemester === NaN)
+      if (semesterId) {
+        const intSemesterId = parseInt(semesterId);
+        if (intSemesterId === NaN)
           return next(new ApiError(404, 'Học kỳ không hợp lệ'));
 
-        filter.semesterId = intSemester;
+        filter.semesterId = intSemesterId;
       }
 
       // Retrieve student's scores
@@ -63,7 +62,8 @@ module.exports = {
       let secondSemesterAvgs = [];
       let groupScores = [];
 
-      if (semester === '1') {
+      console.log(semesterId, typeof semesterId);
+      if (semesterId === '1') {
         groupScores = await scoreService.groupScoreByCourse(scores);
         firstSemesterAvgs = scoreService.calcAvgScores(groupScores);
         const firstSemesterAvg =
@@ -88,9 +88,7 @@ module.exports = {
         firstSemesterAvgs = scoreService.calcAvgScores(groupScores);
         const firstSemesterAvg =
           scoreService.calcSemseterAvg(firstSemesterAvgs);
-        // console.log(firstSemesterAvgs);
         const firstSemesterTitle = scoreService.getTitle(firstSemesterAvgs);
-        // console.log(firstSemesterTitle);
 
         // Group scores by course and calculate averaeg score for the 2nd semester
         const secondSemesterScores = scores.filter(
@@ -106,11 +104,9 @@ module.exports = {
 
         // Calculate average score for the whole year
         // (1st semester score + (2 * 2nd semester score)) / 3
-        const overallAvgs = firstSemesterAvgs.map((score, index) =>
-          (
-            (parseFloat(score) + 2 * parseFloat(secondSemesterAvgs[index])) /
-            3
-          ).toFixed(1)
+        const overallAvgs = scoreService.calcOverallAvgScores(
+          firstSemesterAvgs,
+          secondSemesterAvgs
         );
         const overallAvg = scoreService.calcFinalAvg(
           firstSemesterAvg,

@@ -6,26 +6,31 @@ class ScoreService {
     {
       avg: 8.0,
       minAvg: 6.5,
+      requiredPassingPE: true,
       title: 'Học sinh Giỏi',
     },
     {
       avg: 6.5,
       minAvg: 5.0,
+      requiredPassingPE: true,
       title: 'Học sinh Khá',
     },
     {
       avg: 5.0,
       minAvg: 3.5,
+      requiredPassingPE: false,
       title: 'Học sinh Trung Bình',
     },
     {
       avg: 3.5,
       minAvg: 2.0,
+      requiredPassingPE: false,
       title: 'Học sinh Yếu',
     },
     {
       avg: 0,
       minAvg: 0,
+      requiredPassingPE: false,
       title: 'Học sinh Kém',
     },
   ];
@@ -66,7 +71,7 @@ class ScoreService {
   }
 
   calcAvgScores(groupScores) {
-    return groupScores.map((group) => {
+    return groupScores.map((group, index) => {
       const sumOfRegularScore = group.regular.reduce(
         (acc, cur) => acc + cur.score,
         0
@@ -85,12 +90,35 @@ class ScoreService {
             this._scoreWeights.final)
         ).toFixed(1)
       );
-
-      return average;
+      if (index !== 12) return average;
+      // Physical Education course calculation
+      console.log('avg:', average);
+      console.log('finalScore: ', finalScore);
+      if (average >= 2 / 3 && finalScore >= 0.5) {
+        return 1.0;
+      }
+      return 0.0;
     });
   }
 
-  calcSemseterAvg(avgScores) {
+  calcOverallAvgScores(firstSemesterAvgs, secondSemesterAvgs) {
+    return firstSemesterAvgs.map((firstSemesterAvg, i) => {
+      const secondSemesterAvg = secondSemesterAvgs[i];
+      const avg = parseFloat(
+        (
+          (firstSemesterAvg * this._semesterWeights.first +
+            secondSemesterAvg * this._semesterWeights.second) /
+          (this._semesterWeights.first + this._semesterWeights.second)
+        ).toFixed(1)
+      );
+      if (i !== 12) return avg;
+      if (parseFloat(secondSemesterAvg) >= 0.67) return 1.0;
+      return 0.0;
+    });
+  }
+
+  calcSemseterAvg([...avgScores]) {
+    avgScores.pop();
     return parseFloat(
       avgScores.reduce((acc, cur) => parseFloat(acc) + parseFloat(cur), 0) /
         avgScores.length
@@ -112,9 +140,10 @@ class ScoreService {
     failMainCourses: [],
     // Course ids that have lower score than the min good classification
     failCourses: [],
+    failPE: 0,
   });
 
-  getTitle(avgScores) {
+  getTitle([...avgScores]) {
     // Check if the student pass add requirements of each classification
     let qualified = true;
     // Store reasons of downgrading
@@ -124,15 +153,16 @@ class ScoreService {
     };
     const avgScore = this.calcSemseterAvg(avgScores);
     const mainCourseScores = this._mainCourseIds.map((id) => avgScores[id - 1]);
-    console.log('Avg scores: ', avgScores);
-    console.log('Main courses: ', mainCourseScores);
+    const passPE = avgScores.pop();
+    // console.log('Avg scores: ', avgScores);
+    // console.log('Main courses: ', mainCourseScores);
 
     /**========================
      * Start classification
      * =====================**/
 
     // Classify student from good to fail
-    for (let i = 0; i < this._classification.length - 1; i++) {
+    for (let i = 0; i < this._classification.length; i++) {
       // Reset condition checking variables
       qualified = true;
       // Use value to store the processed temp reasons
@@ -160,6 +190,10 @@ class ScoreService {
           reasons.temp.failCourses.push(index + 1);
         }
       });
+      if (this._classification[i].requiredPassingPE && !passPE) {
+        qualified = false;
+        reasons.temp.failPE = 1;
+      }
 
       if (qualified) {
         return {

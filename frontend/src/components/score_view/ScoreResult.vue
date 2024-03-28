@@ -14,6 +14,9 @@ const semester = defineModel('semester', { required: true })
 const errorMessage = defineModel('errorMessage', { required: true })
 
 const items = ref([])
+const letterGrade = ref(['CĐ', 'Đ'])
+const results = ref({})
+
 const courseArray = computed(() => {
   const courseArray = Array.from({ length: props.courses.length + 1 }, () => '')
   props.courses.forEach((course) => {
@@ -22,14 +25,24 @@ const courseArray = computed(() => {
   return courseArray
 })
 
+function getScore(score, courseId) {
+  return courseId !== 13 ? score : letterGrade.value[score]
+}
+
 onMounted(() => {
+  if (semester.value === 1) {
+    results.value = props.firstSemesterResults
+  } else {
+    results.value = props.overallResults
+  }
+
   // Suggestion for condition 1
-  if (props.firstSemesterResults.reasons.failAvgScore) {
-    items.value.push(`Điểm trung bình >= ${props.firstSemesterResults.avg}`)
+  if (results.value.reasons.failAvgScore) {
+    items.value.push(`Điểm trung bình >= ${results.value.avg}`)
   }
 
   // Suggestion for condition 2
-  const { failMainCourses, failCourses } = props.firstSemesterResults.reasons
+  const { failMainCourses, failCourses } = results.value.reasons
   if (failMainCourses.length > 0) {
     let suggestion = 'Điểm trung bình các môn: '
     let courseNames = []
@@ -37,7 +50,7 @@ onMounted(() => {
       courseNames.push(courseArray.value[courseId])
     })
 
-    suggestion += `${courseNames.join(', ')} >= ${props.firstSemesterResults.avg}`
+    suggestion += `${courseNames.join(', ')} >= ${results.value.avg}`
     items.value.push(suggestion)
   }
 
@@ -47,7 +60,7 @@ onMounted(() => {
     failCourses.forEach((courseId) => {
       suggestion += `${courseArray.value[courseId]}, `
     })
-    suggestion += ` >= ${props.firstSemesterResults.minAvg}`
+    suggestion += ` >= ${results.value.minAvg}`
     items.value.push(suggestion)
   }
 })
@@ -88,7 +101,7 @@ onMounted(() => {
             v-if="semester == 2"
             class="text-end"
           >
-            {{ scores?.firstSemesterAvgs[course.id - 1] }}
+            {{ getScore(scores?.firstSemesterAvgs[course.id - 1], course.id) }}
           </td>
           <!-- KT thường xuyên - cột có điểm -->
           <td
@@ -96,7 +109,7 @@ onMounted(() => {
             v-for="score in scores.groupScores[course.id - 1].regular"
             :key="score.id"
           >
-            {{ score.score }}
+            {{ getScore(score.score, course.id) }}
           </td>
           <!-- KT thường xuyên - cột trống -->
           <td
@@ -105,28 +118,32 @@ onMounted(() => {
             :key="i + scores?.groupScores[course.id - 1]?.regular.length"
           ></td>
           <!-- Giữa kì -->
-          <td class="text-end">{{ scores?.groupScores[course.id - 1].midterm.score }}</td>
+          <td class="text-end">
+            {{ getScore(scores.groupScores[course.id - 1].midterm.score, course.id) }}
+          </td>
           <!-- Cuối kì -->
-          <td class="text-end">{{ scores?.groupScores[course.id - 1].final.score }}</td>
+          <td class="text-end">
+            {{ getScore(scores.groupScores[course.id - 1].final.score, course.id) }}
+          </td>
           <!-- Điểm trung bình -->
           <td
             v-if="semester === 1"
             class="text-end"
           >
-            {{ scores?.firstSemesterAvgs[course.id - 1] }}
+            {{ getScore(scores?.firstSemesterAvgs[course.id - 1], course.id) }}
           </td>
           <td
             v-else
             class="text-end"
           >
-            {{ scores?.secondSemesterAvgs[course.id - 1] }}
+            {{ getScore(scores?.secondSemesterAvgs[course.id - 1], course.id) }}
           </td>
           <!-- Cả năm -->
           <td
             v-if="semester == 2"
             class="text-end"
           >
-            {{ scores?.overallAvgs[course.id - 1] }}
+            {{ getScore(scores?.overallAvgs[course.id - 1], course.id) }}
           </td>
         </tr>
       </tbody>
@@ -134,35 +151,39 @@ onMounted(() => {
 
     <div class="score-summary">
       <!-- Overall -->
-      <table class="score-summary-table mx-auto">
-        <thead>
-          <tr>
-            <th>Học kì</th>
-            <th>Điểm trung bình</th>
-            <th>Danh hiệu</th>
-          </tr>
-        </thead>
-        <tbody>
-          <tr>
-            <td class="text-center">1</td>
-            <td class="text-center">
-              {{ scores?.firstSemesterAvg }}
-            </td>
-            <td class="text-center">{{ firstSemesterResults.title }}</td>
-          </tr>
-          <tr v-if="semester === 2">
-            <td class="text-center">2</td>
-            <td class="text-center">{{ scores?.secondSemesterAvg }}</td>
-            <td class="text-center">{{ secondSemesterResults?.title }}</td>
-          </tr>
-        </tbody>
-      </table>
+
       <!-- Suggestion -->
-      <div class="score-suggestion | info-group flow figure mt-8 mx-auto">
-        <h3 class="fs-4 pl-4 mb-4 fw-500"></h3>
-        <p class="fs-6 pl-4">
-          Để đạt được danh hiệu {{ firstSemesterResults?.nextTitle }}, bạn cần:
-        </p>
+      <div class="score-suggestion | flow figure">
+        <h3 class="fs-4 pl-4 mb-4 fw-500">Tổng kết</h3>
+        <table class="score-summary-table mr-4 ml-2">
+          <thead>
+            <tr>
+              <th>Học kì</th>
+              <th>Điểm trung bình</th>
+              <th>Danh hiệu</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td class="text-center">1</td>
+              <td class="text-center">
+                {{ scores?.firstSemesterAvg }}
+              </td>
+              <td class="text-center">{{ firstSemesterResults.title }}</td>
+            </tr>
+            <tr v-if="semester === 2">
+              <td class="text-center">2</td>
+              <td class="text-center">{{ scores?.secondSemesterAvg }}</td>
+              <td class="text-center">{{ secondSemesterResults?.title }}</td>
+            </tr>
+            <tr v-if="semester === 2">
+              <td class="text-center">2</td>
+              <td class="text-center">{{ scores?.overallAvg }}</td>
+              <td class="text-center">{{ overallResults?.title }}</td>
+            </tr>
+          </tbody>
+        </table>
+        <p class="fs-6 pl-4 mt-8">Để đạt được danh hiệu {{ results.nextTitle }}, bạn cần:</p>
         <md-list v-if="items.length > 0">
           <template
             v-for="(item, index) in items"
@@ -196,13 +217,13 @@ onMounted(() => {
     </h3>
   </div>
 </template>
-<style lang="scss" src="../../assets/scss/components/_info-group.scss"></style>
+<!-- <style lang="scss" src="../../assets/scss/components/_info-group.scss"></style> -->
 <style lang="scss">
 .score {
   &-result {
     display: flex;
-    align-items: start;
-    justify-content: center;
+    align-items: baseline;
+    justify-content: baseline;
     gap: 2rem;
     flex-wrap: wrap;
 
@@ -212,13 +233,16 @@ onMounted(() => {
   }
   &-summary {
     min-width: 30rem;
+    max-width: 50rem;
     flex: 1;
-    &-table {
-      justify-self: end;
-    }
+    width: fit-content;
+
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-start;
   }
   &-suggestion {
-    max-width: 50rem;
+    width: fit-content;
   }
 }
 </style>

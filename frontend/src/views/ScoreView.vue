@@ -39,7 +39,7 @@ watchEffect(async () => {
     loading.value = true
     response.value = await studentService.getScores(filter.value)
     courses.value = await courseService.getAll()
-    console.log(response.value.firstSemesterTitle)
+    console.log(response.value)
 
     errorMessage.value = ''
     loading.value = false
@@ -54,14 +54,14 @@ watchEffect(async () => {
 </script>
 
 <template>
+  <h1 class="container fs-2">Điểm số</h1>
   <div
     class="container score-view"
     style="--content-max-width: 90rem"
   >
-    <h1 class="fs-2">Điểm số</h1>
     <div
       style="display: flex"
-      class="my-4"
+      class="mb-4"
     >
       <!-- Year Selection -->
       <md-outlined-select
@@ -112,6 +112,7 @@ watchEffect(async () => {
       :courses="courses"
       :first-semester-results="response?.firstSemesterTitle"
       :second-semester-results="response?.secondSemesterTitle"
+      :overall-results="response?.overallTitle"
       v-model:semester="semester"
       v-model:errorMessage="errorMessage"
     />
