@@ -3,43 +3,7 @@ const ApiError = require('../api-error');
 const Course = require('../models/course.model');
 const Score = require('../models/score.model');
 const Year = require('../models/year.model');
-
-async function groupScoreByCourse(semesterScore) {
-  const courses = await Course.findAll();
-  const groupScores = Array.from({ length: courses.length }, () => ({
-    regular: [],
-  }));
-  semesterScore.forEach((score) => {
-    if (score.type === 'regular') {
-      groupScores[score.courseId - 1].regular.push(score);
-    } else {
-      groupScores[score.courseId - 1][score.type] = score;
-    }
-  });
-  return groupScores;
-}
-
-function calcAvgScore(groupScores) {
-  return groupScores.map((group) => {
-    const sumOfRegularScore = group.regular.reduce(
-      (acc, cur) => acc + parseFloat(cur.score),
-      0
-    );
-    const numOfRegularScore = group.regular.length;
-    const midtermScore = group.midterm.score;
-    const finalScore = group.final.score;
-
-    // Regular weight: 1
-    // Midterm weight: 2
-    // Final weight:   3
-    const average = (
-      (sumOfRegularScore + midtermScore * 2 + finalScore * 3) /
-      (numOfRegularScore + 2 + 3)
-    ).toFixed(1);
-
-    return average;
-  });
-}
+const scoreService = require('../services/score.service');
 
 module.exports = {
   async show(req, res, next) {
@@ -51,6 +15,7 @@ module.exports = {
       }
 
       const { yearId, semester } = req.query;
+      // console.log(req.query);
 
       // Find years when student enroll in
       const scoreYears = await Score.findAll({
@@ -78,7 +43,7 @@ module.exports = {
         if (intSemester === NaN)
           return next(new ApiError(404, 'Học kỳ không hợp lệ'));
 
-        filter.semesterId = parseInt(semester);
+        filter.semesterId = intSemester;
       }
 
       // Retrieve student's scores
@@ -94,54 +59,83 @@ module.exports = {
       }
 
       // Process student's scores
-      let firstSemesterAvg = [];
-      let secondSemesterAvg = [];
+      let firstSemesterAvgs = [];
+      let secondSemesterAvgs = [];
       let groupScores = [];
 
       if (semester === '1') {
-        groupScores = await groupScoreByCourse(scores);
-        firstSemesterAvg = calcAvgScore(groupScores);
+        groupScores = await scoreService.groupScoreByCourse(scores);
+        firstSemesterAvgs = scoreService.calcAvgScores(groupScores);
+        const firstSemesterAvg =
+          scoreService.calcSemseterAvg(firstSemesterAvgs);
+        console.log(firstSemesterAvgs);
+        const firstSemesterTitle = scoreService.getTitle(firstSemesterAvgs);
 
         res.send({
           groupScores,
+          firstSemesterAvgs,
           firstSemesterAvg,
+          firstSemesterTitle,
         });
       } else {
         // Calculate average score for the 1st semester
         const firstSemesterScores = scores.filter(
           (score) => score.semesterId === 1
         );
-        groupScores = await groupScoreByCourse(firstSemesterScores);
-        firstSemesterAvg = calcAvgScore(groupScores);
+        groupScores = await scoreService.groupScoreByCourse(
+          firstSemesterScores
+        );
+        firstSemesterAvgs = scoreService.calcAvgScores(groupScores);
+        const firstSemesterAvg =
+          scoreService.calcSemseterAvg(firstSemesterAvgs);
+        // console.log(firstSemesterAvgs);
+        const firstSemesterTitle = scoreService.getTitle(firstSemesterAvgs);
+        // console.log(firstSemesterTitle);
 
         // Group scores by course and calculate averaeg score for the 2nd semester
         const secondSemesterScores = scores.filter(
           (score) => score.semesterId === 2
         );
-        groupScores = await groupScoreByCourse(secondSemesterScores);
-        secondSemesterAvg = calcAvgScore(groupScores);
+        groupScores = await scoreService.groupScoreByCourse(
+          secondSemesterScores
+        );
+        secondSemesterAvgs = scoreService.calcAvgScores(groupScores);
+        const secondSemesterAvg =
+          scoreService.calcSemseterAvg(secondSemesterAvgs);
+        const secondSemesterTitle = scoreService.getTitle(secondSemesterAvgs);
 
         // Calculate average score for the whole year
         // (1st semester score + (2 * 2nd semester score)) / 3
-        const wholeYearAvg = firstSemesterAvg.map((score, index) =>
+        const overallAvgs = firstSemesterAvgs.map((score, index) =>
           (
-            (parseFloat(score) + 2 * parseFloat(secondSemesterAvg[index])) /
+            (parseFloat(score) + 2 * parseFloat(secondSemesterAvgs[index])) /
             3
           ).toFixed(1)
         );
+        const overallAvg = scoreService.calcFinalAvg(
+          firstSemesterAvg,
+          secondSemesterAvg
+        );
+        const overallTitle = scoreService.getTitle(overallAvgs);
 
         res.send({
           firstSemesterAvg,
+          firstSemesterAvgs,
+          firstSemesterTitle,
           groupScores,
           secondSemesterAvg,
-          wholeYearAvg,
+          secondSemesterAvgs,
+          secondSemesterTitle,
+          overallAvg,
+          overallAvgs,
+          overallTitle,
         });
       }
     } catch (error) {
       return next(
         new ApiError(
           500,
-          `Error occurred while retrieving student info: ${error}`
+          `Error occurred while retrieving student scores: ${error}`
         )
       );
     }
