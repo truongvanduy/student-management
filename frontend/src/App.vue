@@ -2,6 +2,8 @@
 import { ref, shallowRef, watch } from 'vue'
 import DefaultLayout from './layouts/DefaultLayout.vue'
 import { useRoute } from 'vue-router'
+import { storeToRefs } from 'pinia'
+import { useSnackbar } from './stores/SnackBarStore'
 
 const route = useRoute()
 const layout = shallowRef()
@@ -24,16 +26,25 @@ watch(
   },
   { immediate: true }
 )
+
+const { isOpened, type, message } = storeToRefs(useSnackbar())
 </script>
 
 <template>
-  <div v-if="isLoading">Loading...</div>
+  <div v-if="isLoading">
+    <md-linear-progress indeterminate></md-linear-progress>
+  </div>
   <component
     v-else
     :is="layout"
   >
     <router-view />
   </component>
+  <SnackBar
+    :is-opened="isOpened"
+    :type="type"
+    :content="message"
+  />
 </template>
 
 <style lang="scss" scoped></style>
