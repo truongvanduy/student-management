@@ -1,5 +1,5 @@
 const { sequelize, DataTypes } = require('../utils/db.util');
-const Student = require('./student.model');
+const Student = require('./user.model');
 
 const Parent = sequelize.define(
   'parent',

@@ -1,8 +1,5 @@
-const student = require('../utils/data/student');
 const { sequelize, DataTypes } = require('../utils/db.util');
-const Class = require('./class.model');
 const Grade = require('./grade.model');
-const Student = require('./student.model');
 
 const StudentClass = sequelize.define('student_class', {
   gradeId: {
@@ -20,7 +17,7 @@ const StudentClass = sequelize.define('student_class', {
     allowNull: false,
     primaryKey: true,
   },
-  studentId: {
+  userId: {
     type: DataTypes.INTEGER,
     allowNull: false,
     primaryKey: true,

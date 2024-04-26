@@ -1,9 +1,9 @@
 <script setup>
 import { useRouter } from 'vue-router'
 import AuthenticationLayout from '@/layouts/AuthenticationLayout.vue'
-import studentService from '@/services/student.service'
 import { onMounted, ref } from 'vue'
 import MdIcon from '@/components/icons/MdIcon.vue'
+import userService from '@/services/user.service'
 const { email } = defineProps({
   email: String
 })
@@ -17,7 +17,7 @@ onMounted(async () => {
   if (email) {
     try {
       loading.value = true
-      const response = await studentService.getByEmail(email)
+      const response = await userService.getByEmail(email)
       user.value = response.data
     } catch (err) {
       console.log(err)
@@ -35,16 +35,15 @@ const errorMessage = ref('')
 async function handleSignIn() {
   try {
     loading.value = true
-    console.log(user.value.email)
-    const response = await studentService.login({
+    const response = await userService.login({
       email: user.value?.email,
       password: password.value
     })
 
-    const { authenticated, student } = response.data
-
+    const { authenticated, user: userData } = response.data
+    console.log(authenticated, userData)
     if (authenticated) {
-      localStorage.setItem('student', JSON.stringify(student))
+      localStorage.setItem('user', JSON.stringify(userData))
       router.push({
         name: 'profile'
       })

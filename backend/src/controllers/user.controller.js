@@ -1,18 +1,14 @@
 const jwt = require('jsonwebtoken');
 const ApiError = require('../api-error');
 const User = require('../models/user.model');
-const StudentClass = require('../models/student_class.model');
 const bcrypt = require('bcrypt');
 const { createToken, maxAge } = require('../utils/token.util');
-const Class = require('../models/class.model');
-const Grade = require('../models/grade.model');
-const { raw } = require('express');
 
 module.exports = {
   async show(req, res, next) {
     try {
       const id = req.params.id;
-      const student = await User.findByPk(id, {
+      const user = await User.findByPk(id, {
         attributes: [
           'firstName',
           'lastName',
@@ -20,23 +16,14 @@ module.exports = {
           'phoneNumber',
           'address',
           'dateOfBirth',
+          'role',
         ],
         raw: true,
       });
-      if (student == null) {
+      if (user == null) {
         return next(new ApiError(404, 'Student not found.'));
       }
-
-      const studentClass = await StudentClass.findOne({
-        where: { userId: id },
-        order: [['yearId', 'DESC']],
-        include: [Grade],
-      });
-
-      const response = {
-        ...student,
-        className: `${studentClass.Grade.gradeLevel}.${studentClass.classOrder}`,
-      };
+      const response = user;
 
       return res.send(response);
     } catch (error) {
@@ -56,25 +43,25 @@ module.exports = {
     }
 
     try {
-      const student = await User.findOne({
+      const user = await User.findOne({
         where: { email },
       });
-      if (!student) {
-        return next(new ApiError(404, 'Student not found.'));
+      if (!user) {
+        return next(new ApiError(404, 'User not found.'));
       }
 
       // Return email if not authenticated
       const token = req.cookies.jwt;
       if (!token) {
         return res.send({
-          email: student.email,
+          email: user.email,
           authenticated: false,
         });
       }
       jwt.verify(token, process.env.JWT_SECRET, (err, decodedToken) => {
         if (err) {
           return res.send({
-            email: student.email,
+            email: user.email,
             authenticated: false,
           });
         }
@@ -82,8 +69,8 @@ module.exports = {
         return res.send({
           authenticated: true,
           student: {
-            id: student.id,
-            email: student.email,
+            id: user.id,
+            email: user.email,
           },
         });
       });
@@ -98,7 +85,6 @@ module.exports = {
   },
 
   async login(req, res, next) {
-    console.log(req.body);
     const { email, password } = req.body;
 
     if (!email || !password) {
@@ -107,24 +93,27 @@ module.exports = {
 
     try {
       // If email exists
-      const student = await User.findOne({
+      const user = await User.findOne({
         where: { email },
       });
-      if (!student) {
-        return next(new ApiError(404, 'Không tìm thấy học sinh này'));
+      if (!user) {
+        return next(new ApiError(404, 'Không tìm thấy người dùng này'));
       }
 
       // If password is correct
-      const passwordMatched = await bcrypt.compare(password, student.password);
+      const passwordMatched = await bcrypt.compare(password, user.password);
       if (!passwordMatched) {
         return next(new ApiError(401, 'Mật khẩu không đúng'));
       }
 
       // Assign token
-      const token = createToken(student.id);
+      const token = createToken({ id: user.id, role: user.role });
       res.cookie('jwt', token, { httpOnly: true, maxAge: maxAge * 1000 });
 
-      return res.send({ authenticated: true, student: student });
+      return res.send({
+        authenticated: true,
+        user: { id: user.id, role: user.role },
+      });
     } catch (error) {
       return next(
         new ApiError(

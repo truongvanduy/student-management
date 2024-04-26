@@ -21,9 +21,10 @@ module.exports = {
         attributes: ['yearId'],
         group: ['yearId'],
         where: {
-          studentId: student.id,
+          userId: student.id,
         },
         distinct: true,
+        raw: true,
       });
       // Flatten the object to an array of yearId
       const yearArray = scoreYears.map((year) => year.yearId);
@@ -48,7 +49,7 @@ module.exports = {
       // Retrieve student's scores
       const scores = await Score.findAll({
         where: {
-          studentId: student.id,
+          userId: student.id,
           ...filter,
         },
       });
@@ -62,13 +63,11 @@ module.exports = {
       let secondSemesterAvgs = [];
       let groupScores = [];
 
-      console.log(semesterId, typeof semesterId);
       if (semesterId === '1') {
         groupScores = await scoreService.groupScoreByCourse(scores);
         firstSemesterAvgs = scoreService.calcAvgScores(groupScores);
         const firstSemesterAvg =
           scoreService.calcSemseterAvg(firstSemesterAvgs);
-        console.log(firstSemesterAvgs);
         const firstSemesterTitle = scoreService.getTitle(firstSemesterAvgs);
 
         res.send({

@@ -9,8 +9,8 @@ const router = useRouter()
 
 async function handleSignOut() {
   await studentService.logout()
-  const { email } = JSON.parse(localStorage.getItem('student'))
-  localStorage.removeItem('student')
+  const { email } = JSON.parse(localStorage.getItem('user'))
+  localStorage.removeItem('user')
 
   router.replace({ name: 'login.email', query: { email } })
   router.go(0)
