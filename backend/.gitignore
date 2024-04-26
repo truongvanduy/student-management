@@ -1,3 +1,4 @@
 node_modules
 .env
-src/utils/data
+/src/utils/data/
+src/utils/data/
