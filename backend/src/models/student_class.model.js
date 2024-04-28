@@ -19,7 +19,7 @@ const StudentClass = sequelize.define('student_class', {
     allowNull: false,
     primaryKey: true,
   },
-  userId: {
+  studentId: {
     type: DataTypes.INTEGER,
     allowNull: false,
     primaryKey: true,
@@ -29,8 +29,8 @@ const StudentClass = sequelize.define('student_class', {
 StudentClass.belongsTo(Grade, { foreignKey: 'gradeId' });
 Grade.hasMany(StudentClass, { foreignKey: 'gradeId' });
 
-StudentClass.belongsTo(User, { foreignKey: 'userId' });
-User.hasMany(StudentClass, { foreignKey: 'userId' });
+StudentClass.belongsTo(User, { foreignKey: 'studentId' });
+User.hasMany(StudentClass, { foreignKey: 'studentId' });
 
 StudentClass.belongsTo(Year, { foreignKey: 'yearId' });
 Year.hasMany(StudentClass, { foreignKey: 'yearId' });

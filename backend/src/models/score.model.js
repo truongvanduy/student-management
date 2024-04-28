@@ -29,8 +29,8 @@ Score.belongsTo(Semester, { foreignKey: 'semesterId' });
 Course.hasMany(Score, { foreignKey: 'courseId' });
 Score.belongsTo(Course, { foreignKey: 'courseId' });
 
-User.hasMany(Score, { foreignKey: 'userId' });
-Score.belongsTo(User, { foreignKey: 'userId' });
+User.hasMany(Score, { foreignKey: 'studentId' });
+Score.belongsTo(User, { foreignKey: 'studentId' });
 
 Score.sync();
 
