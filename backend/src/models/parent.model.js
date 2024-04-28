@@ -12,8 +12,12 @@ const Parent = sequelize.define(
       type: DataTypes.STRING,
       allowNull: false,
     },
+    occupation: {
+      type: DataTypes.STRING,
+      allowNull: true,
+    },
     relationship: {
-      type: DataTypes.ENUM(['']),
+      type: DataTypes.ENUM(['father', 'mother', 'guardian', 'other']),
       allowNull: false,
     },
   },
