@@ -39,6 +39,7 @@ const router = createRouter({
         }
       ]
     },
+    // Teacher routes
     {
       path: '/teacher',
       name: 'teacher',
@@ -48,6 +49,33 @@ const router = createRouter({
           path: 'classes',
           name: 'teacher.classes',
           component: () => import('@/views/teacher/TeacherClasses.vue')
+        }
+      ]
+    },
+    // Admin routes
+    {
+      path: '/admin',
+      name: 'admin',
+      children: [
+        {
+          path: 'teachers',
+          name: 'admin.teachers',
+          component: () => import('@/views/admin/TeachersManagement.vue')
+        },
+        {
+          path: 'teachers/create',
+          name: 'admin.teachers.create',
+          component: () => import('@/views/admin/TeacherForm.vue')
+        },
+        {
+          path: 'students',
+          name: 'admin.students',
+          component: () => import('@/views/admin/StudentsManagement.vue')
+        },
+        {
+          path: 'students/create',
+          name: 'admin.students.create',
+          component: () => import('@/views/admin/StudentForm.vue')
         }
       ]
     }
