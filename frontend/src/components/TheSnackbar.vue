@@ -1,5 +1,5 @@
 <script setup>
-import { useSnackbar } from '@/stores/SnackBarStore'
+import { useSnackbar } from '@/stores/SnackbarStore'
 import MdIconButton from './buttons/MdIconButton.vue'
 import MdIcon from './icons/MdIcon.vue'
 import { ref } from 'vue'
