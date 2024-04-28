@@ -1,14 +1,17 @@
 <script setup>
 import { ref } from 'vue'
 import MdIcon from '../icons/MdIcon.vue'
+import { useRouter } from 'vue-router'
 
 const form = ref(null)
 const searchField = ref(null)
+const router = useRouter()
 
-function onEnter(e) {
-  if (e.key === 'Enter') {
-    form.value.submit()
-  }
+function handleSearch() {
+  router.push({
+    name: 'books',
+    query: { q: searchField.value }
+  })
 }
 </script>
 <template>
@@ -19,18 +22,13 @@ function onEnter(e) {
     class="search"
   >
     <md-outlined-text-field
-      ref="searchField"
-      name="search"
-      :onkeyup="onEnter"
-      on
-      placeholder="Search for books"
+      type="search"
+      v-model="searchField"
+      name="q"
+      @keyup.enter="handleSearch"
+      placeholder="Tìm kiếm sách"
     >
-      <md-icon-button
-        type="submit"
-        slot="trailing-icon"
-      >
-        <MdIcon>search</MdIcon>
-      </md-icon-button>
+      <MdIcon slot="leading-icon">search</MdIcon>
     </md-outlined-text-field>
   </form>
 </template>
