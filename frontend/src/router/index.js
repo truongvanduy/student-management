@@ -76,6 +76,12 @@ const router = createRouter({
           path: 'students/create',
           name: 'admin.students.create',
           component: () => import('@/views/admin/StudentForm.vue')
+        },
+        {
+          path: 'students/edit/:id',
+          name: 'admin.students.edit',
+          component: () => import('@/views/admin/StudentForm.vue'),
+          props: true
         }
       ]
     }

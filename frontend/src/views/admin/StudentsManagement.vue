@@ -15,14 +15,18 @@ const loading = ref(true)
 const students = ref([])
 const years = ref([])
 const snackbar = useSnackbar()
+const selectedYear = defineModel('selectedYear')
 
 onMounted(async () => {
   try {
     loading.value = true
 
-    students.value = await studentService.getAll()
     years.value = await yearService.getAll()
-    console.log(students.value)
+    selectedYear.value = years.value[years.value.length - 1].id
+
+    students.value = await studentService.getAll({
+      yearId: selectedYear.value
+    })
   } catch (error) {
     console.error(error)
     snackbar.show({
@@ -36,15 +40,19 @@ onMounted(async () => {
 // Hanlde search
 const searchText = ref('')
 
-async function updateBookList() {
+async function updateStudentList() {
   try {
     loading.value = true
 
-    students.value = await studentService.getAll({ q: searchText.value })
+    students.value = await studentService.getAll({
+      name: searchText.value,
+      yearId: selectedYear.value
+    })
+    console.log(students.value)
   } catch (error) {
     snackbar.show({
       type: 'error',
-      message: error.response.data.message || 'Có lỗi xảy ra'
+      message: getErrorMessage(error)
     })
   }
   loading.value = false
@@ -57,14 +65,14 @@ function showCreate() {
 }
 
 function handleEditClick(id) {
-  router.push({ name: 'admin.books.edit', params: { id } })
+  router.push({ name: 'admin.students.edit', params: { id } })
 }
 
 const dialogOpen = ref(false)
-const bookId = ref(null)
+const userId = ref(null)
 function openDialog(id) {
   dialogOpen.value = true
-  bookId.value = id
+  userId.value = id
 }
 function closeDialog() {
   dialogOpen.value = false
@@ -78,12 +86,12 @@ async function handleDeleteClick() {
 
   try {
     loading.value = true
-    const response = await studentService.delete(bookId.value)
+    const response = await studentService.delete(userId.value)
 
     reload.value = true
     snackbar.show({
       type: 'success',
-      message: response?.message || 'Xoá sách thành công'
+      message: response?.message || 'Xoá học sinh thành công'
     })
   } catch (error) {
     console.log(error)
@@ -95,8 +103,8 @@ async function handleDeleteClick() {
   loading.value = false
 }
 
-watch(reload, async () => {
-  await updateBookList()
+watch([reload, selectedYear], async () => {
+  await updateStudentList()
   reload.value = false
 })
 </script>
@@ -117,7 +125,7 @@ watch(reload, async () => {
       <SearchBar
         v-model="searchText"
         :placeholder="'Tìm kiếm học sinh'"
-        @submit="() => updateBookList()"
+        @submit="() => updateStudentList()"
       ></SearchBar>
 
       <!-- Year Selection -->
@@ -125,13 +133,12 @@ watch(reload, async () => {
         v-if="years && years.length > 0"
         class="ml-auto"
         label="Năm học"
+        v-model="selectedYear"
       >
         <md-select-option
-          v-for="(year, index) in years"
+          v-for="year in years"
           :key="year.id"
           :value="year.id"
-          :selected="index === years.length - 1 ? 'selected' : undefined"
-          @click="activeYear = year.id"
         >
           <div slot="headline">{{ year.year }}</div>
         </md-select-option>
@@ -141,7 +148,7 @@ watch(reload, async () => {
     <!-- Result table -->
     <table
       v-if="students.length > 0"
-      class="table table-solid table-book"
+      class="table table-solid table-full pb-8 mb-20"
     >
       <thead>
         <tr>
@@ -154,23 +161,34 @@ watch(reload, async () => {
       <tbody>
         <tr
           v-for="student in students"
-          :key="student._id"
+          :key="student.id"
         >
           <td class="text-center">{{ student.id }}</td>
           <td>
             {{ student.lastName + ' ' + student.firstName }}
           </td>
-          <td class="text-center">
+          <td
+            v-if="student?.student_classes?.length > 0"
+            class="text-center"
+          >
             {{
               student.student_classes[0].Grade.gradeLevel +
               '.' +
               student.student_classes[0].classOrder
             }}
           </td>
+          <td
+            v-else
+            class="text-center"
+          ></td>
           <td>
             <div class="student-row">
-              <MdIconButton @click="() => handleEditClick(student._id)">edit</MdIconButton>
-              <MdIconButton @click="() => openDialog(student._id)">delete</MdIconButton>
+              <MdIconButton
+                class="ml-auto"
+                @click="() => handleEditClick(student.id)"
+                >edit</MdIconButton
+              >
+              <MdIconButton @click="() => openDialog(student.id)">delete</MdIconButton>
             </div>
           </td>
         </tr>
@@ -198,21 +216,21 @@ watch(reload, async () => {
       slot="content"
       method="dialog"
     >
-      Sách bị xóa sẽ không thể khôi phục lại, bạn có chắc chắn muốn tiếp tục?
+      Thông tin bị xóa sẽ không thể khôi phục lại, bạn có chắc chắn muốn tiếp tục?
     </form>
     <div slot="actions">
       <md-text-button
         form="form"
         value="delete"
         @click="handleDeleteClick"
-        >Delete</md-text-button
+        >Xóa</md-text-button
       >
       <md-filled-tonal-button
         form="form"
         value="cancel"
         autofocus
         @click="closeDialog"
-        >Cancel</md-filled-tonal-button
+        >Trở về</md-filled-tonal-button
       >
     </div>
   </md-dialog>
@@ -228,10 +246,10 @@ watch(reload, async () => {
 </template>
 
 <style lang="scss" scoped>
-.table-book {
+.table-full {
   width: 100%;
 }
-.book {
+.student {
   &-row {
     display: flex;
     gap: 0.5rem;

@@ -24,6 +24,10 @@ const User = sequelize.define('User', {
     type: DataTypes.DATEONLY,
     allowNull: false,
   },
+  placeOfBirth: {
+    type: DataTypes.STRING,
+    allowNull: true,
+  },
   address: {
     type: DataTypes.STRING,
     allowNull: false,
@@ -47,7 +51,7 @@ const User = sequelize.define('User', {
 });
 
 User.addHook('beforeCreate', async (user, options) => {
-  user.password = await hash_passwordUtil(user.password);
+  user.password = await hash_passwordUtil(user?.password || user.phoneNumber);
 });
 
 User.addHook('afterCreate', async (user, options) => {

@@ -16,16 +16,26 @@ studentRouter
     requireAuth,
     verifyRole('admin'),
     studentAdminController.store,
-    successMiddleware
+    successMiddleware('Thêm học sinh thành công')
   );
 // Edit
 studentRouter
   .route('/edit/:id')
   .get(requireAuth, verifyRole('admin'), studentAdminController.edit)
-  .patch(requireAuth, verifyRole('admin'), studentAdminController.update);
+  .patch(
+    requireAuth,
+    verifyRole('admin'),
+    studentAdminController.update,
+    successMiddleware('Cập nhật học sinh thành công')
+  );
 // Delete
 studentRouter
   .route('/delete/:id')
-  .delete(requireAuth, verifyRole('admin'), studentAdminController.destroy);
+  .delete(
+    requireAuth,
+    verifyRole('admin'),
+    studentAdminController.destroy,
+    successMiddleware('Xóa học sinh thành công')
+  );
 
 module.exports = studentRouter;

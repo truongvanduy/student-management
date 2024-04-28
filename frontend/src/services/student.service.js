@@ -5,8 +5,8 @@ class StudentService {
     this.api = createApiClient('/api/student')
   }
 
-  async getAll() {
-    return (await this.api.get(`/`)).data
+  async getAll(query) {
+    return (await this.api.get(`/`, { params: query })).data
   }
 
   async getByEmail(email) {
@@ -26,7 +26,13 @@ class StudentService {
   }
 
   async store(data) {
-    return (await this.api.post(`/create`, data)).data
+    return (
+      await this.api.post(`/create`, data, {
+        headers: {
+          'Content-Type': 'application/json'
+        }
+      })
+    ).data
   }
 
   async edit(id) {
