@@ -30,3 +30,6 @@ coverage
 *.sw?
 
 *.tsbuildinfo
+
+/backend/src/utils/data/
+backend/src/utils/data/
