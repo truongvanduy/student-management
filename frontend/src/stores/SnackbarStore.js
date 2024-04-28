@@ -1,6 +1,6 @@
 import { defineStore } from 'pinia'
 
-export const useSnackbar = defineStore('snackBarStore', {
+export const useSnackbar = defineStore('snackbarStore', {
   state: () => ({
     isOpened: false,
     message: '',
