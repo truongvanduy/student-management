@@ -43,7 +43,7 @@ const checkStudent = (req, res, next) => {
       req.student = null;
       return next();
     }
-    req.student = student;
+    req.student = user;
     next();
   });
 };
