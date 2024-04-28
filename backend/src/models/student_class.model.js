@@ -1,5 +1,7 @@
 const { sequelize, DataTypes } = require('../utils/db.util');
 const Grade = require('./grade.model');
+const User = require('./user.model');
+const Year = require('./year.model');
 
 const StudentClass = sequelize.define('student_class', {
   gradeId: {
@@ -25,6 +27,13 @@ const StudentClass = sequelize.define('student_class', {
 });
 
 StudentClass.belongsTo(Grade, { foreignKey: 'gradeId' });
+Grade.hasMany(StudentClass, { foreignKey: 'gradeId' });
+
+StudentClass.belongsTo(User, { foreignKey: 'userId' });
+User.hasMany(StudentClass, { foreignKey: 'userId' });
+
+StudentClass.belongsTo(Year, { foreignKey: 'yearId' });
+Year.hasMany(StudentClass, { foreignKey: 'yearId' });
 
 // const queryInterface = sequelize.getQueryInterface();
 
