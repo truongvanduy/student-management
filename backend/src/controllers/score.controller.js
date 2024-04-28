@@ -21,7 +21,7 @@ module.exports = {
         attributes: ['yearId'],
         group: ['yearId'],
         where: {
-          userId: student.id,
+          studentId: student.id,
         },
         distinct: true,
         raw: true,
@@ -49,7 +49,7 @@ module.exports = {
       // Retrieve student's scores
       const scores = await Score.findAll({
         where: {
-          userId: student.id,
+          studentId: student.id,
           ...filter,
         },
       });

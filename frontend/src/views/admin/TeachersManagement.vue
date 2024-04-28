@@ -8,18 +8,25 @@ import SearchBar from '@/components/SearchBar.vue'
 import { useSnackbar } from '@/stores/SnackbarStore'
 import studentService from '@/services/student.service'
 import getErrorMessage from '@/utils/getErrorMessage.util'
+import yearService from '@/services/year.service'
 
 // Init state
 const loading = ref(true)
-const books = ref([])
-const SERVER_BASE_URL = ref(import.meta.env.VITE_SERVER_BASE_URL)
+const students = ref([])
+const years = ref([])
 const snackbar = useSnackbar()
+const selectedYear = defineModel('selectedYear')
 
 onMounted(async () => {
   try {
     loading.value = true
 
-    books.value = await studentService.getAll()
+    years.value = await yearService.getAll()
+    selectedYear.value = years.value[years.value.length - 1].id
+
+    students.value = await studentService.getAll({
+      yearId: selectedYear.value
+    })
   } catch (error) {
     console.error(error)
     snackbar.show({
@@ -33,15 +40,19 @@ onMounted(async () => {
 // Hanlde search
 const searchText = ref('')
 
-async function updateBookList() {
+async function updateStudentList() {
   try {
     loading.value = true
 
-    books.value = await studentService.getAll({ q: searchText.value })
+    students.value = await studentService.getAll({
+      name: searchText.value,
+      yearId: selectedYear.value
+    })
+    console.log(students.value)
   } catch (error) {
     snackbar.show({
       type: 'error',
-      message: error.response.data.message || 'Có lỗi xảy ra'
+      message: getErrorMessage(error)
     })
   }
   loading.value = false
@@ -50,18 +61,18 @@ async function updateBookList() {
 // Handle actions
 const router = useRouter()
 function showCreate() {
-  router.push({ name: 'admin.books.create' })
+  router.push({ name: 'admin.students.create' })
 }
 
 function handleEditClick(id) {
-  router.push({ name: 'admin.books.edit', params: { id } })
+  router.push({ name: 'admin.students.edit', params: { id } })
 }
 
 const dialogOpen = ref(false)
-const bookId = ref(null)
+const userId = ref(null)
 function openDialog(id) {
   dialogOpen.value = true
-  bookId.value = id
+  userId.value = id
 }
 function closeDialog() {
   dialogOpen.value = false
@@ -75,11 +86,12 @@ async function handleDeleteClick() {
 
   try {
     loading.value = true
-    const response = await studentService.delete(bookId.value)
+    const response = await studentService.delete(userId.value)
+
     reload.value = true
     snackbar.show({
       type: 'success',
-      message: response?.message || 'Xoá sách thành công'
+      message: response?.message || 'Xoá giáo viên thành công'
     })
   } catch (error) {
     console.log(error)
@@ -91,8 +103,8 @@ async function handleDeleteClick() {
   loading.value = false
 }
 
-watch(reload, async () => {
-  await updateBookList()
+watch([reload, selectedYear], async () => {
+  await updateStudentList()
   reload.value = false
 })
 </script>
@@ -106,55 +118,77 @@ watch(reload, async () => {
     v-else
     class="container flow"
   >
-    <h1 class="fs-2">Quản lý sách</h1>
+    <h1 class="fs-2">Quản lý giáo viên</h1>
 
-    <!-- Search -->
-    <SearchBar
-      class="ml-auto"
-      v-model="searchText"
-      @submit="() => updateBookList()"
-    ></SearchBar>
+    <div class="facb">
+      <!-- Search -->
+      <SearchBar
+        v-model="searchText"
+        :placeholder="'Tìm kiếm giáo viên'"
+        @submit="() => updateStudentList()"
+      ></SearchBar>
+
+      <!-- Year Selection -->
+      <md-outlined-select
+        v-if="years && years.length > 0"
+        class="ml-auto"
+        label="Năm học"
+        v-model="selectedYear"
+      >
+        <md-select-option
+          v-for="year in years"
+          :key="year.id"
+          :value="year.id"
+        >
+          <div slot="headline">{{ year.year }}</div>
+        </md-select-option>
+      </md-outlined-select>
+    </div>
 
     <!-- Result table -->
     <table
-      v-if="books.length > 0"
-      class="table table-solid table-book"
+      v-if="students.length > 0"
+      class="table table-solid table-full pb-8 mb-20"
     >
       <thead>
         <tr>
           <th>STT</th>
-          <th>Tên sách</th>
-          <th style="text-wrap: nowrap">Số lượng</th>
+          <th>Họ tên giáo viên</th>
+          <th style="text-wrap: nowrap">Lớp</th>
           <th></th>
         </tr>
       </thead>
       <tbody>
         <tr
-          v-for="(book, index) in books"
-          :key="book._id"
+          v-for="student in students"
+          :key="student.id"
         >
-          <td class="text-center">{{ index + 1 }}</td>
+          <td class="text-center">{{ student.id }}</td>
           <td>
-            <div class="book-row">
-              <div class="book-img">
-                <img
-                  :src="SERVER_BASE_URL + book.imageSource"
-                  alt=""
-                />
-              </div>
-              <div class="book-content">
-                <h6 class="fs-6">
-                  {{ book.title }}
-                </h6>
-                <p>{{ book.authors }}</p>
-              </div>
-            </div>
+            {{ student.lastName + ' ' + student.firstName }}
           </td>
-          <td class="text-center">{{ book.quantity }}</td>
+          <td
+            v-if="student?.student_classes?.length > 0"
+            class="text-center"
+          >
+            {{
+              student.student_classes[0].Grade.gradeLevel +
+              '.' +
+              student.student_classes[0].classOrder
+            }}
+          </td>
+          <td
+            v-else
+            class="text-center"
+          ></td>
           <td>
-            <div class="book-row">
-              <MdIconButton @click="() => handleEditClick(book._id)">edit</MdIconButton>
-              <MdIconButton @click="() => openDialog(book._id)">delete</MdIconButton>
+            <div class="student-row">
+              <MdIconButton
+                class="ml-auto"
+                @click="() => handleEditClick(student.id)"
+                >edit</MdIconButton
+              >
+              <MdIconButton @click="() => openDialog(student.id)">delete</MdIconButton>
             </div>
           </td>
         </tr>
@@ -182,21 +216,21 @@ watch(reload, async () => {
       slot="content"
       method="dialog"
     >
-      Sách bị xóa sẽ không thể khôi phục lại, bạn có chắc chắn muốn tiếp tục?
+      Thông tin bị xóa sẽ không thể khôi phục lại, bạn có chắc chắn muốn tiếp tục?
     </form>
     <div slot="actions">
       <md-text-button
         form="form"
         value="delete"
         @click="handleDeleteClick"
-        >Delete</md-text-button
+        >Xóa</md-text-button
       >
       <md-filled-tonal-button
         form="form"
         value="cancel"
         autofocus
         @click="closeDialog"
-        >Cancel</md-filled-tonal-button
+        >Trở về</md-filled-tonal-button
       >
     </div>
   </md-dialog>
@@ -212,10 +246,10 @@ watch(reload, async () => {
 </template>
 
 <style lang="scss" scoped>
-.table-book {
+.table-full {
   width: 100%;
 }
-.book {
+.student {
   &-row {
     display: flex;
     gap: 0.5rem;

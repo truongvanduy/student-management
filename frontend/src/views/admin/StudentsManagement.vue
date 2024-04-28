@@ -69,10 +69,10 @@ function handleEditClick(id) {
 }
 
 const dialogOpen = ref(false)
-const userId = ref(null)
+const studentId = ref(null)
 function openDialog(id) {
   dialogOpen.value = true
-  userId.value = id
+  studentId.value = id
 }
 function closeDialog() {
   dialogOpen.value = false
@@ -86,7 +86,7 @@ async function handleDeleteClick() {
 
   try {
     loading.value = true
-    const response = await studentService.delete(userId.value)
+    const response = await studentService.delete(studentId.value)
 
     reload.value = true
     snackbar.show({

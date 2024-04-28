@@ -28,7 +28,7 @@ module.exports = {
       }
 
       const studentClass = await StudentClass.findOne({
-        where: { userId: id },
+        where: { studentId: id },
         order: [['yearId', 'DESC']],
         include: [Grade],
       });

@@ -23,7 +23,7 @@ module.exports = {
         attributes: ['yearId'],
         group: ['yearId'],
         where: {
-          userId: student.id,
+          studentId: student.id,
         },
         include: Year,
       });
