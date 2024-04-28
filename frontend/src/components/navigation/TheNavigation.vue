@@ -27,7 +27,18 @@ const routes = {
       urlName: 'teacher.classes'
     }
   ],
-  admin: []
+  admin: [
+    {
+      name: 'Quản lý giáo viên',
+      icon: 'person_edit',
+      urlName: 'admin.teachers'
+    },
+    {
+      name: 'Quản lý học sinh',
+      icon: 'person_edit',
+      urlName: 'admin.students'
+    }
+  ]
 }
 
 const authorizedRoutes = ref([...routes.shared])
