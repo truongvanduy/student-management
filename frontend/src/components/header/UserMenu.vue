@@ -2,18 +2,28 @@
 import { ref } from 'vue'
 import IconMenu from '../menu/IconMenu.vue'
 import MenuItem from '@/components/menu/MenuItem.vue'
-import studentService from '@/services/student.service'
 import { useRouter } from 'vue-router'
+import userService from '@/services/user.service'
+import { useSnackbar } from '@/stores/SnackbarStore'
+import getErrorMessage from '@/utils/getErrorMessage.util'
 
 const router = useRouter()
 
 async function handleSignOut() {
-  await studentService.logout()
-  const { email } = JSON.parse(localStorage.getItem('user'))
-  localStorage.removeItem('user')
+  try {
+    await userService.logout()
+    const { email } = JSON.parse(localStorage.getItem('user'))
+    localStorage.removeItem('user')
 
-  router.replace({ name: 'login.email', query: { email } })
-  router.go(0)
+    router.replace({ name: 'login.email', query: { email } })
+    router.go(0)
+  } catch (error) {
+    const snackbar = useSnackbar()
+    snackbar.show({
+      type: 'error',
+      message: getErrorMessage(error)
+    })
+  }
 }
 
 const menuItems = ref([
