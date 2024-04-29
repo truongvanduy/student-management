@@ -15,7 +15,7 @@ const Class = sequelize.define('class', {
     type: DataTypes.INTEGER,
     primaryKey: true,
   },
-  numberOfStudents: {
+  studentCount: {
     type: DataTypes.INTEGER,
     allowNull: true,
     validate: {

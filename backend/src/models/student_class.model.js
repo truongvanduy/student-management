@@ -1,4 +1,6 @@
+const { where } = require('sequelize');
 const { sequelize, DataTypes } = require('../utils/db.util');
+const Class = require('./class.model');
 const Grade = require('./grade.model');
 const User = require('./user.model');
 const Year = require('./year.model');
@@ -35,26 +37,48 @@ User.hasMany(StudentClass, { foreignKey: 'studentId' });
 StudentClass.belongsTo(Year, { foreignKey: 'yearId' });
 Year.hasMany(StudentClass, { foreignKey: 'yearId' });
 
-// const queryInterface = sequelize.getQueryInterface();
-
-// StudentClass.sync().then(() => {
-//   queryInterface.addConstraint('student_class', {
-//     fields: ['grade_id', 'year_id', 'class_order'],
-//     type: 'foreign key',
-//     references: {
-//       table: 'class',
-//       fields: ['grade_id', 'year_id', 'order'],
-//     },
-//   });
-//   queryInterface.addConstraint('student_class', {
-//     fields: ['student_id'],
-//     type: 'foreign key',
-//     references: {
-//       table: 'student',
-//       fields: ['id'],
-//     },
-//   });
-// });
+StudentClass.addHook('afterCreate', async (studentClass, options) => {
+  const studentCount = await StudentClass.count({
+    where: {
+      gradeId: studentClass.gradeId,
+      yearId: studentClass.yearId,
+      classOrder: studentClass.classOrder,
+    },
+  });
+  await Class.update(
+    {
+      studentCount,
+    },
+    {
+      where: {
+        gradeId: studentClass.gradeId,
+        yearId: studentClass.yearId,
+        order: studentClass.classOrder,
+      },
+    }
+  );
+});
+StudentClass.addHook('afterDestroy', async (studentClass, options) => {
+  const studentCount = await StudentClass.count({
+    where: {
+      gradeId: studentClass.gradeId,
+      yearId: studentClass.yearId,
+      classOrder: studentClass.classOrder,
+    },
+  });
+  await Class.update(
+    {
+      studentCount,
+    },
+    {
+      where: {
+        gradeId: studentClass.gradeId,
+        yearId: studentClass.yearId,
+        order: studentClass.classOrder,
+      },
+    }
+  );
+});
 
 StudentClass.sync();
 

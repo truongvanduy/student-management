@@ -3,6 +3,8 @@ const { sequelize } = require('../utils/db.util');
 const User = require('../models/user.model');
 const Course = require('../models/course.model');
 const { where } = require('sequelize');
+const TeacherClass = require('../models/teacher_class.model');
+const Homeroom = require('../models/homeroom.model');
 
 module.exports = async function initData(_req, _res, next) {
   try {
@@ -116,6 +118,19 @@ module.exports = async function initData(_req, _res, next) {
     //     },
     //   }
     // );
+
+    // const teacher = await User.findOne({
+    //   where: {
+    //     role: 'teacher',
+    //   },
+    // });
+
+    // await Homeroom.create({
+    //   gradeId: 3,
+    //   yearId: 3,
+    //   classOrder: 1,
+    //   teacherId: teacher.id,
+    // });
 
     return next();
   } catch (error) {
