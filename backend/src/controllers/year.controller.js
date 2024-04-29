@@ -12,6 +12,7 @@ module.exports = {
       return res.send(years);
     } catch (error) {}
   },
+
   async getStudentYear(req, res, next) {
     const student = req?.student;
     if (!student) {

@@ -24,5 +24,6 @@ apiRouter
 
 apiRouter.use('/user', require('./user.route'));
 apiRouter.use('/student', require('./student.route'));
+apiRouter.use('/teacher', require('./teacher.route'));
 
 module.exports = apiRouter;

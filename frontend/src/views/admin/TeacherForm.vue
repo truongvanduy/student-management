@@ -18,11 +18,9 @@ const { id } = defineProps({
 const years = ref([])
 const grades = ref([])
 const classes = ref([])
-const relations = ref(['father', 'mother', 'guardian', 'other'])
 
 const existingStudent = ref(null)
 const existingClass = ref(null)
-const existingParents = ref([])
 const snackbar = useSnackbar()
 
 const loading = ref(true)
@@ -48,7 +46,6 @@ onMounted(async () => {
     if (id !== '') {
       existingStudent.value = result?.student
       existingClass.value = result?.studentClass
-      existingParents.value = result?.parents
       console.log(existingClass.value)
 
       firstName.value = existingStudent.value?.firstName || ''
@@ -62,19 +59,6 @@ onMounted(async () => {
       year.value = existingClass.value.yearId || ''
       grade.value = existingClass.value.gradeId || ''
       selectedClass.value = existingClass.value.classOrder || ''
-
-      if (existingParents.value.length > 0) {
-        parent1Name.value = existingParents.value[0].fullName || ''
-        parent1Phone.value = existingParents.value[0].phoneNumber || ''
-        parent1Occupation.value = existingParents.value[0].occupation || ''
-        parent1Relation.value = existingParents.value[0].relation || ''
-      }
-      if (existingParents.value.length > 1) {
-        parent2Name.value = existingParents.value[1].fullName || ''
-        parent2Phone.value = existingParents.value[1].phoneNumber || ''
-        parent2Occupation.value = existingParents.value[1].occupation || ''
-        parent2Relation.value = existingParents.value[1].relation || ''
-      }
     }
   } catch (error) {
     snackbar.show({
@@ -114,16 +98,6 @@ const filteredClasses = computed(() => {
   )
 })
 
-// Other
-const parent1Name = ref()
-const parent1Phone = ref()
-const parent1Occupation = ref()
-const parent1Relation = ref()
-const parent2Name = ref()
-const parent2Phone = ref()
-const parent2Occupation = ref()
-const parent2Relation = ref()
-
 async function handleSubmit() {
   const formData = {
     id: id,
@@ -138,21 +112,7 @@ async function handleSubmit() {
       yearId: year.value,
       gradeId: grade.value,
       classOrder: selectedClass.value
-    },
-    parents: [
-      {
-        fullName: parent1Name.value,
-        phoneNumber: parent1Phone.value,
-        occupation: parent1Occupation.value,
-        relation: parent1Relation.value
-      },
-      {
-        fullName: parent2Name.value,
-        phoneNumber: parent2Phone.value,
-        occupation: parent2Occupation.value,
-        relation: parent2Relation.value
-      }
-    ]
+    }
   }
   console.log(formData)
 
@@ -191,7 +151,7 @@ async function handleSubmit() {
       class="container"
       style="--container-width: 36rem"
     >
-      <h2 class="fs-2 mb-4">{{ id ? 'Cập nhật học sinh' : 'Thêm học sinh mới' }}</h2>
+      <h2 class="fs-2 mb-4">{{ id ? 'Cập nhật giáo viên' : 'Thêm giáo viên mới' }}</h2>
 
       <!-- Form -->
       <form
@@ -330,117 +290,13 @@ async function handleSubmit() {
           </div>
         </section>
 
-        <!-- Other section -->
-        <section class="form-section">
-          <h3 class="fs-4">Thông tin khác</h3>
-          <!-- Parent 1 -->
-          <div class="flow">
-            <label
-              for="parent1"
-              class="fs-5"
-              >Cha, mẹ hoặc người giám hộ 1</label
-            >
-          </div>
-          <div class="form-control">
-            <!-- Name -->
-            <md-outlined-text-field
-              style="flex: 1"
-              type="text"
-              name="pName1"
-              label="Họ tên"
-              v-model="parent1Name"
-            ></md-outlined-text-field>
-            <!-- Phone number -->
-            <md-outlined-text-field
-              type="tel"
-              name="pPhone1"
-              label="Số điện thoại"
-              v-model="parent1Phone"
-            ></md-outlined-text-field>
-          </div>
-
-          <div class="form-control">
-            <!-- Occupation -->
-            <md-outlined-text-field
-              style="flex: 1"
-              type="text"
-              name="pOccupation1"
-              label="Nghề nghiệp"
-              v-model="parent1Occupation"
-            ></md-outlined-text-field>
-
-            <!-- Relation -->
-            <md-outlined-select
-              label="Mối quan hệ với học sinh"
-              v-model="parent1Relation"
-            >
-              <md-select-option
-                v-for="(relation, index) in relations"
-                :key="index"
-                :value="relation"
-              >
-                <div slot="headline">
-                  {{ translate(relation) }}
-                </div>
-              </md-select-option>
-            </md-outlined-select>
-          </div>
-          <!-- Parent 2 -->
-          <div class="flow">
-            <label
-              for="parent1"
-              class="fs-5"
-              >Cha, mẹ hoặc người giám hộ 2</label
-            >
-          </div>
-          <div class="form-control">
-            <!-- Name -->
-            <md-outlined-text-field
-              style="flex: 1"
-              type="text"
-              name="pName2"
-              label="Họ tên"
-              v-model="parent2Name"
-            ></md-outlined-text-field>
-            <!-- Phone number -->
-            <md-outlined-text-field
-              type="tel"
-              name="pPhone2"
-              label="Số điện thoại"
-              v-model="parent2Phone"
-            ></md-outlined-text-field>
-          </div>
-
-          <div class="form-control">
-            <!-- Occupation -->
-            <md-outlined-text-field
-              style="flex: 1"
-              type="text"
-              name="pOccupation1"
-              label="Nghề nghiệp"
-              v-model="parent2Occupation"
-            ></md-outlined-text-field>
-
-            <!-- Relation -->
-            <md-outlined-select
-              label="Mối quan hệ với học sinh"
-              v-model="parent2Relation"
-            >
-              <md-select-option
-                v-for="(relation, index) in relations"
-                :key="index"
-                :value="relation"
-              >
-                <div slot="headline">
-                  {{ translate(relation) }}
-                </div>
-              </md-select-option>
-            </md-outlined-select>
-          </div>
-        </section>
-
         <!-- Submit button -->
-        <md-filled-button type="submit"> Thêm </md-filled-button>
+        <md-filled-button
+          class="ml-auto"
+          type="submit"
+        >
+          Thêm
+        </md-filled-button>
       </form>
     </div>
   </template>

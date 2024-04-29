@@ -22,7 +22,7 @@ export const useSnackbar = defineStore('snackbarStore', {
       this.open()
       const timeout = setTimeout(() => {
         this.close()
-      }, 3000)
+      }, 5000)
 
       // save timeout for further clearing
       this.timeout = timeout

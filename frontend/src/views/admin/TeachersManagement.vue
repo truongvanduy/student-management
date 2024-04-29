@@ -6,13 +6,13 @@ import { useRouter } from 'vue-router'
 import MdIcon from '@/components/icons/MdIcon.vue'
 import SearchBar from '@/components/SearchBar.vue'
 import { useSnackbar } from '@/stores/SnackbarStore'
-import studentService from '@/services/student.service'
+import teacherService from '@/services/teacher.service'
 import getErrorMessage from '@/utils/getErrorMessage.util'
 import yearService from '@/services/year.service'
 
 // Init state
 const loading = ref(true)
-const students = ref([])
+const teachers = ref([])
 const years = ref([])
 const snackbar = useSnackbar()
 const selectedYear = defineModel('selectedYear')
@@ -24,7 +24,7 @@ onMounted(async () => {
     years.value = await yearService.getAll()
     selectedYear.value = years.value[years.value.length - 1].id
 
-    students.value = await studentService.getAll({
+    teachers.value = await teacherService.getAll({
       yearId: selectedYear.value
     })
   } catch (error) {
@@ -40,15 +40,15 @@ onMounted(async () => {
 // Hanlde search
 const searchText = ref('')
 
-async function updateStudentList() {
+async function updateteacherList() {
   try {
     loading.value = true
 
-    students.value = await studentService.getAll({
+    teachers.value = await teacherService.getAll({
       name: searchText.value,
       yearId: selectedYear.value
     })
-    console.log(students.value)
+    console.log(teachers.value)
   } catch (error) {
     snackbar.show({
       type: 'error',
@@ -61,11 +61,11 @@ async function updateStudentList() {
 // Handle actions
 const router = useRouter()
 function showCreate() {
-  router.push({ name: 'admin.students.create' })
+  router.push({ name: 'admin.teachers.create' })
 }
 
 function handleEditClick(id) {
-  router.push({ name: 'admin.students.edit', params: { id } })
+  router.push({ name: 'admin.teachers.edit', params: { id } })
 }
 
 const dialogOpen = ref(false)
@@ -86,7 +86,7 @@ async function handleDeleteClick() {
 
   try {
     loading.value = true
-    const response = await studentService.delete(userId.value)
+    const response = await teacherService.delete(userId.value)
 
     reload.value = true
     snackbar.show({
@@ -104,7 +104,7 @@ async function handleDeleteClick() {
 }
 
 watch([reload, selectedYear], async () => {
-  await updateStudentList()
+  await updateteacherList()
   reload.value = false
 })
 </script>
@@ -125,7 +125,7 @@ watch([reload, selectedYear], async () => {
       <SearchBar
         v-model="searchText"
         :placeholder="'Tìm kiếm giáo viên'"
-        @submit="() => updateStudentList()"
+        @submit="() => updateteacherList()"
       ></SearchBar>
 
       <!-- Year Selection -->
@@ -147,7 +147,7 @@ watch([reload, selectedYear], async () => {
 
     <!-- Result table -->
     <table
-      v-if="students.length > 0"
+      v-if="teachers.length > 0"
       class="table table-solid table-full pb-8 mb-20"
     >
       <thead>
@@ -160,21 +160,21 @@ watch([reload, selectedYear], async () => {
       </thead>
       <tbody>
         <tr
-          v-for="student in students"
-          :key="student.id"
+          v-for="teacher in teachers"
+          :key="teacher.id"
         >
-          <td class="text-center">{{ student.id }}</td>
+          <td class="text-center">{{ teacher.id }}</td>
           <td>
-            {{ student.lastName + ' ' + student.firstName }}
+            {{ teacher.lastName + ' ' + teacher.firstName }}
           </td>
           <td
-            v-if="student?.student_classes?.length > 0"
+            v-if="teacher?.teacher_classes?.length > 0"
             class="text-center"
           >
             {{
-              student.student_classes[0].Grade.gradeLevel +
+              teacher.teacher_classes[0].Grade.gradeLevel +
               '.' +
-              student.student_classes[0].classOrder
+              teacher.teacher_classes[0].classOrder
             }}
           </td>
           <td
@@ -182,13 +182,13 @@ watch([reload, selectedYear], async () => {
             class="text-center"
           ></td>
           <td>
-            <div class="student-row">
+            <div class="teacher-row">
               <MdIconButton
                 class="ml-auto"
-                @click="() => handleEditClick(student.id)"
+                @click="() => handleEditClick(teacher.id)"
                 >edit</MdIconButton
               >
-              <MdIconButton @click="() => openDialog(student.id)">delete</MdIconButton>
+              <MdIconButton @click="() => openDialog(teacher.id)">delete</MdIconButton>
             </div>
           </td>
         </tr>
@@ -249,7 +249,7 @@ watch([reload, selectedYear], async () => {
 .table-full {
   width: 100%;
 }
-.student {
+.teacher {
   &-row {
     display: flex;
     gap: 0.5rem;
