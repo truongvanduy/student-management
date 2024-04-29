@@ -2,6 +2,7 @@ const { sequelize } = require('../utils/db.util');
 // const _associations = require('../models/associations');
 const User = require('../models/user.model');
 const Course = require('../models/course.model');
+const { where } = require('sequelize');
 
 module.exports = async function initData(_req, _res, next) {
   try {
@@ -104,6 +105,17 @@ module.exports = async function initData(_req, _res, next) {
     // Score.bulkCreate(scoreData);
     // Score.sync();
     // console.log('Score data has been initialized successfully.');
+
+    // await User.update(
+    //   {
+    //     placeOfBirth: 'Cần Thơ',
+    //   },
+    //   {
+    //     where: {
+    //       placeOfBirth: null,
+    //     },
+    //   }
+    // );
 
     return next();
   } catch (error) {
