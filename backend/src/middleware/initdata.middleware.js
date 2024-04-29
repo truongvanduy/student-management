@@ -1,12 +1,34 @@
 const { sequelize } = require('../utils/db.util');
 // const _associations = require('../models/associations');
-const Student = require('../models/student.model');
+const User = require('../models/user.model');
 const Course = require('../models/course.model');
 
 module.exports = async function initData(_req, _res, next) {
   try {
     await sequelize.authenticate();
     console.log('Connection has been established successfully.');
+
+    // Create admin
+    // const admin = User.create({
+    //   firstName: 'Trực',
+    //   lastName: 'Nguyễn Trung',
+    //   dateOfBirth: '1999-01-01',
+    //   address: 'Cần Thơ',
+    //   phoneNumber: '0774925508',
+    //   role: 'admin',
+    //   password: 'admin',
+    // });
+
+    // Create sample teacher
+    // const admin = User.create({
+    //   firstName: 'Thức',
+    //   lastName: 'Võ Trí',
+    //   dateOfBirth: '1981-08-21',
+    //   address: 'Cần Thơ',
+    //   phoneNumber: '0744321555',
+    //   role: 'teacher',
+    //   password: 'teacher',
+    // });
 
     // const studentData = require('../utils/data/student');
     // const datas = await Student.bulkCreate(studentData);

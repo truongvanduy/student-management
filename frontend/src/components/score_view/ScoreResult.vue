@@ -177,7 +177,7 @@ onMounted(() => {
               <td class="text-center">{{ secondSemesterResults?.title }}</td>
             </tr>
             <tr v-if="semester === 2">
-              <td class="text-center">2</td>
+              <td class="text-center">Cả năm</td>
               <td class="text-center">{{ scores?.overallAvg }}</td>
               <td class="text-center">{{ overallResults?.title }}</td>
             </tr>

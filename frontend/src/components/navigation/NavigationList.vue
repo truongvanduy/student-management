@@ -30,7 +30,7 @@ const { isExpanded } = storeToRefs(useMenuStore())
       :key="index"
       :name="item.name"
       :icon="item.icon"
-      :url="item.url"
+      :urlName="item.urlName"
     />
     <slot></slot>
     <md-divider

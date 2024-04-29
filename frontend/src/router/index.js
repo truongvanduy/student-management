@@ -14,16 +14,6 @@ const router = createRouter({
       component: () => import('../views/ScoreView.vue')
     },
     {
-      path: '/settings',
-      name: 'settings',
-      component: () => import('../views/SettingsView.vue')
-    },
-    {
-      path: '/users-management',
-      name: 'users-management',
-      component: () => import('../views/UsersManagementView.vue')
-    },
-    {
       path: '/:pathMatch(.*)*',
       name: 'FallBack',
       component: () => import('../views/DashboardView.vue')
@@ -48,15 +38,61 @@ const router = createRouter({
           props: (route) => ({ email: route.params.email })
         }
       ]
+    },
+    // Teacher routes
+    {
+      path: '/teacher',
+      name: 'teacher',
+      component: () => import('@/views/TheProfile.vue'),
+      children: [
+        {
+          path: 'classes',
+          name: 'teacher.classes',
+          component: () => import('@/views/teacher/TeacherClasses.vue')
+        }
+      ]
+    },
+    // Admin routes
+    {
+      path: '/admin',
+      name: 'admin',
+      children: [
+        {
+          path: 'teachers',
+          name: 'admin.teachers',
+          component: () => import('@/views/admin/TeachersManagement.vue')
+        },
+        {
+          path: 'teachers/create',
+          name: 'admin.teachers.create',
+          component: () => import('@/views/admin/TeacherForm.vue')
+        },
+        {
+          path: 'students',
+          name: 'admin.students',
+          component: () => import('@/views/admin/StudentsManagement.vue')
+        },
+        {
+          path: 'students/create',
+          name: 'admin.students.create',
+          component: () => import('@/views/admin/StudentForm.vue')
+        },
+        {
+          path: 'students/edit/:id',
+          name: 'admin.students.edit',
+          component: () => import('@/views/admin/StudentForm.vue'),
+          props: true
+        }
+      ]
     }
   ],
   linkActiveClass: 'active'
 })
 
 router.beforeEach(async (to) => {
-  const student = localStorage.getItem('student')
+  const user = localStorage.getItem('user')
 
-  if (to.name !== 'login.email' && to.name !== 'login.password' && !student) {
+  if (to.name !== 'login.email' && to.name !== 'login.password' && !user) {
     return { name: 'login.email' }
   }
 })

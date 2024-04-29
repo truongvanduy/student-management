@@ -2,31 +2,53 @@
 import { storeToRefs } from 'pinia'
 import NavigationList from './NavigationList.vue'
 
-import { ref } from 'vue'
+import { onBeforeMount, ref } from 'vue'
 import { useMenuStore } from '@/stores/MenuStore'
 
-const navItems = ref([
-  {
-    name: 'Thông tin cá nhân',
-    icon: 'person',
-    url: '/'
-  },
-  {
-    name: 'Điểm số',
-    icon: 'bar_chart',
-    url: '/scores'
-  },
-  {
-    name: 'Settings',
-    icon: 'settings',
-    url: '/settings'
-  },
-  {
-    name: 'Users Management',
-    icon: 'manage_accounts',
-    url: '/users-management'
+const routes = {
+  shared: [
+    {
+      name: 'Thông tin cá nhân',
+      icon: 'person',
+      urlName: 'profile'
+    }
+  ],
+  student: [
+    {
+      name: 'Điểm số',
+      icon: 'bar_chart',
+      urlName: 'scores'
+    }
+  ],
+  teacher: [
+    {
+      name: 'Lớp bộ môn',
+      icon: 'bar_chart',
+      urlName: 'teacher.classes'
+    }
+  ],
+  admin: [
+    {
+      name: 'Quản lý giáo viên',
+      icon: 'person_edit',
+      urlName: 'admin.teachers'
+    },
+    {
+      name: 'Quản lý học sinh',
+      icon: 'person_edit',
+      urlName: 'admin.students'
+    }
+  ]
+}
+
+const authorizedRoutes = ref([...routes.shared])
+
+onBeforeMount(() => {
+  const user = JSON.parse(localStorage.getItem('user'))
+  if (user?.role) {
+    authorizedRoutes.value = [...authorizedRoutes.value, ...routes[user.role]]
   }
-])
+})
 
 const menuStore = useMenuStore()
 
@@ -41,7 +63,7 @@ const { isOpened, isExpanded } = storeToRefs(menuStore)
     <nav>
       <NavigationList
         :haveSeparator="false"
-        :items="navItems"
+        :items="authorizedRoutes"
       >
       </NavigationList>
     </nav>

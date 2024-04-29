@@ -39,7 +39,6 @@ watchEffect(async () => {
     loading.value = true
     response.value = await studentService.getScores(filter.value)
     courses.value = await courseService.getAll()
-    console.log(response.value)
 
     errorMessage.value = ''
     loading.value = false
@@ -106,7 +105,7 @@ watchEffect(async () => {
 
     <!-- Score table -->
     <ScoreResult
-      v-if="!loading && response.groupScores.length > 0"
+      v-if="!loading && response?.groupScores?.length > 0"
       :scores="response"
       :loading="loading"
       :courses="courses"

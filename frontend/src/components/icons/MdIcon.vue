@@ -3,6 +3,10 @@ defineProps({
   style: {
     type: String,
     default: 'outlined'
+  },
+  fontSize: {
+    type: Number,
+    default: 1.5
   }
 })
 </script>
@@ -11,6 +15,7 @@ defineProps({
   <md-icon
     class="material-symbols-rounded"
     :data-style="style"
+    :style="`font-size: ${fontSize}rem`"
   >
     <slot></slot>
   </md-icon>

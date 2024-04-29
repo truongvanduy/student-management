@@ -13,7 +13,7 @@ defineProps({
     type: String,
     default: ''
   },
-  url: {
+  urlName: {
     type: String,
     default: '#'
   }
@@ -26,7 +26,7 @@ const { isExpanded } = storeToRefs(menuStore)
 
 <template>
   <router-link
-    :to="url"
+    :to="{ name: urlName }"
     tabindex="-1"
     v-slot="{ isActive }"
   >

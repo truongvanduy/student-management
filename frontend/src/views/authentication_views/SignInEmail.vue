@@ -1,7 +1,7 @@
 <script setup>
 import AuthenticationLayout from '@/layouts/AuthenticationLayout.vue'
 import { ref } from 'vue'
-import userService from '@/services/student.service'
+import userService from '@/services/user.service'
 import { useRouter, useRoute } from 'vue-router'
 
 const route = useRoute()

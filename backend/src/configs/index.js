@@ -16,6 +16,9 @@ if (
 }
 
 const config = {
+  logic: {
+    numOfExistingYears: 3,
+  },
   app: {
     PORT: process.env.PORT || 3000,
   },

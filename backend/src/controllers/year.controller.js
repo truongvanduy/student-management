@@ -3,6 +3,15 @@ const Score = require('../models/score.model');
 const Year = require('../models/year.model');
 
 module.exports = {
+  async show(req, res, next) {
+    try {
+      const years = await Year.findAll({});
+      if (!years) {
+        return next(new ApiError(404, 'Không tìm thấy năm học'));
+      }
+      return res.send(years);
+    } catch (error) {}
+  },
   async getStudentYear(req, res, next) {
     const student = req?.student;
     if (!student) {

@@ -1,7 +1,8 @@
 <script setup>
-import studentService from '@/services/student.service'
 import { onMounted, ref } from 'vue'
 import InfoGroup from '../components/profiles/InfoGroup.vue'
+import userService from '@/services/user.service'
+import { translate } from '@/utils/translator.util'
 
 const student = ref({})
 const basicInfo = ref([])
@@ -9,15 +10,14 @@ const contactInfo = ref([])
 
 onMounted(async () => {
   try {
-    const { id } = JSON.parse(localStorage.getItem('student'))
-    student.value = await studentService.getProfile(id)
+    const { id } = JSON.parse(localStorage.getItem('user'))
+    student.value = await userService.getProfile(id)
     console.log(student.value)
 
     basicInfo.value = [
       { key: 'Họ và tên', value: student.value.lastName + ' ' + student.value.firstName },
       { key: 'Ngày sinh', value: student.value.dateOfBirth },
       { key: 'Giới tính', value: 'Nam' },
-      { key: 'Lớp', value: student.value.className },
       { key: 'Địa chỉ', value: student.value.address }
     ]
 
@@ -39,7 +39,7 @@ onMounted(async () => {
 
 <template>
   <div class="student flow container">
-    <h1 class="fs-2">Thông tin học sinh</h1>
+    <h1 class="fs-2">Thông tin {{ translate(student.role) }}</h1>
     <div class="student-info flow fs-6">
       <InfoGroup
         title="Thông tin cơ bản"
