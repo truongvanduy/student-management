@@ -84,6 +84,7 @@ module.exports = {
     const {
       firstName,
       lastName,
+      sex,
       dateOfBirth,
       placeOfBirth,
       address,
@@ -94,6 +95,7 @@ module.exports = {
     if (
       !firstName ||
       !lastName ||
+      !sex ||
       !dateOfBirth ||
       !placeOfBirth ||
       !address ||
@@ -107,6 +109,7 @@ module.exports = {
       const student = await User.create({
         firstName,
         lastName,
+        sex,
         dateOfBirth,
         placeOfBirth,
         address,
@@ -237,6 +240,7 @@ module.exports = {
     const {
       firstName,
       lastName,
+      sex,
       dateOfBirth,
       placeOfBirth,
       address,
@@ -247,6 +251,7 @@ module.exports = {
     if (
       !firstName ||
       !lastName ||
+      !sex ||
       !dateOfBirth ||
       !placeOfBirth ||
       !address ||
@@ -271,6 +276,7 @@ module.exports = {
         {
           firstName,
           lastName,
+          sex,
           dateOfBirth,
           placeOfBirth,
           address,
@@ -325,7 +331,7 @@ module.exports = {
           !parent.occupation ||
           !parent.relation
         ) {
-          return next(new ApiError(400, 'Vui lòng điền đầy đủ thông tin'));
+          return;
         }
         await Parent.upsert(
           {

@@ -53,6 +53,7 @@ onMounted(async () => {
 
       firstName.value = existingStudent.value?.firstName || ''
       lastName.value = existingStudent.value?.lastName || ''
+      sex.value = existingStudent.value?.sex || ''
       dateOfBirth.value = existingStudent.value?.dateOfBirth || ''
       placeOfBirth.value = existingStudent.value?.placeOfBirth || ''
       phoneNumber.value = existingStudent.value?.phoneNumber || ''
@@ -90,6 +91,7 @@ const form = ref(null)
 // Personal
 const firstName = ref('')
 const lastName = ref()
+const sex = ref()
 const dateOfBirth = ref('')
 const placeOfBirth = ref('')
 const phoneNumber = ref('')
@@ -127,6 +129,7 @@ async function handleSubmit() {
     id: id,
     firstName: firstName.value,
     lastName: lastName.value,
+    sex: sex.value,
     dateOfBirth: dateOfBirth.value,
     placeOfBirth: placeOfBirth.value,
     phoneNumber: phoneNumber.value,
@@ -217,6 +220,21 @@ async function handleSubmit() {
               class="form-text-field"
               v-model="firstName"
             />
+            <md-outlined-select
+              class="ml-auto"
+              label="Giới tính"
+              v-model="sex"
+            >
+              <md-select-option value="male">
+                <div slot="headline">{{ translate('male') }}</div>
+              </md-select-option>
+              <md-select-option value="female">
+                <div slot="headline">{{ translate('female') }}</div>
+              </md-select-option>
+              <md-select-option value="other">
+                <div slot="headline">{{ translate('other') }}</div>
+              </md-select-option>
+            </md-outlined-select>
           </div>
 
           <div class="form-control">
@@ -422,7 +440,12 @@ async function handleSubmit() {
         </section>
 
         <!-- Submit button -->
-        <md-filled-button type="submit"> Thêm </md-filled-button>
+        <md-filled-button
+          class="ml-auto"
+          type="submit"
+        >
+          {{ id ? 'Cập nhật' : 'Thêm' }}
+        </md-filled-button>
       </form>
     </div>
   </template>

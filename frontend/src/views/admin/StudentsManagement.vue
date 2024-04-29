@@ -9,6 +9,7 @@ import { useSnackbar } from '@/stores/SnackbarStore'
 import studentService from '@/services/student.service'
 import getErrorMessage from '@/utils/getErrorMessage.util'
 import yearService from '@/services/year.service'
+import { translate } from '@/utils/translator.util'
 
 // Init state
 const loading = ref(true)
@@ -154,6 +155,8 @@ watch([reload, selectedYear], async () => {
         <tr>
           <th>STT</th>
           <th>Họ tên học sinh</th>
+          <th>Giới tính</th>
+          <th>Ngày sinh</th>
           <th style="text-wrap: nowrap">Lớp</th>
           <th></th>
         </tr>
@@ -167,6 +170,8 @@ watch([reload, selectedYear], async () => {
           <td>
             {{ student.lastName + ' ' + student.firstName }}
           </td>
+          <td class="text-center">{{ translate(student.sex) }}</td>
+          <td class="text-center">{{ student.dateOfBirth }}</td>
           <td
             v-if="student?.student_classes?.length > 0"
             class="text-center"

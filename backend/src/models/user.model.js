@@ -20,6 +20,10 @@ const User = sequelize.define('User', {
     type: DataTypes.STRING,
     allowNull: false,
   },
+  sex: {
+    type: DataTypes.ENUM('male', 'female', 'other'),
+    allowNull: true,
+  },
   dateOfBirth: {
     type: DataTypes.DATEONLY,
     allowNull: false,

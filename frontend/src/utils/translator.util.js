@@ -5,7 +5,9 @@ const dictionary = {
   father: 'Cha',
   mother: 'Mẹ',
   guardian: 'Người giám hộ',
-  other: 'Khác'
+  other: 'Khác',
+  male: 'Nam',
+  female: 'Nữ'
 }
 
 export function translate(orgString) {
