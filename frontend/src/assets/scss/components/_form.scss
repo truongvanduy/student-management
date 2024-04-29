@@ -1,4 +1,7 @@
 .form {
+  display: flex;
+  flex-direction: column;
+
   &-section {
     // padding: 1.5rem;
     // border: 1px solid var(--md-sys-color-outline-variant);
