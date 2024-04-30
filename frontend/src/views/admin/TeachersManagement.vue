@@ -200,7 +200,7 @@ watch([reload, selectedYear], async () => {
       v-else
       class="fs5"
     >
-      Không tìm thấy sách. Vui lòng thử lại với từ khóa khác.
+      Không tìm thấy lớp học. Vui lòng thử lại với từ khóa khác.
     </div>
   </div>
 

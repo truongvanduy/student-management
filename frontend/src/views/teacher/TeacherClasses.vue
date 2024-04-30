@@ -21,9 +21,10 @@ const filteredClasses = computed(() => {
       homeroomTeacher: getFullNameUtil(teacher),
       studentCount: classEl?.class?.studentCount,
       query: {
-        order: classEl.classOrder,
+        classOrder: classEl.classOrder,
         yearId: classEl.yearId,
-        gradeId: classEl.gradeId
+        gradeId: classEl.gradeId,
+        courseId: classEl.courseId
       }
     }
   })
@@ -153,7 +154,7 @@ watch([reload, selectedYear], async () => {
       v-else
       class="fs5"
     >
-      Không tìm thấy sách. Vui lòng thử lại với từ khóa khác.
+      Không tìm thấy lớp học. Vui lòng thử lại với từ khóa khác.
     </div>
   </div>
 </template>

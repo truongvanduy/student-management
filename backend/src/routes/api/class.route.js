@@ -10,9 +10,9 @@ classRouter
   .route('/')
   .get(requireAuth, verifyRole('teacher'), teacherClassController.index);
 classRouter
-  .route('/scores/edit')
-  .get(requireAuth, verifyRole('teacher'), scoreController.edit)
-  .put(requireAuth, verifyRole('teacher'), scoreController.update);
+  .route('/score/edit')
+  .get(requireAuth, verifyRole('teacher'), teacherClassController.edit)
+  .post(requireAuth, verifyRole('teacher'), teacherClassController.update);
 // Create
 // classRouter
 //   .route('/create')

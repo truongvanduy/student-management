@@ -4,21 +4,27 @@ const Semester = require('./semester.model');
 const User = require('./user.model');
 const Year = require('./year.model');
 
-const Score = sequelize.define('score', {
-  id: {
-    type: DataTypes.INTEGER,
-    primaryKey: true,
-    autoIncrement: true,
+const Score = sequelize.define(
+  'score',
+  {
+    id: {
+      type: DataTypes.INTEGER,
+      primaryKey: true,
+      autoIncrement: true,
+    },
+    score: {
+      type: DataTypes.DECIMAL(3, 1),
+      allowNull: false,
+    },
+    type: {
+      type: DataTypes.ENUM('regular', 'midterm', 'final'),
+      allowNull: false,
+    },
   },
-  score: {
-    type: DataTypes.DECIMAL(3, 1),
-    allowNull: false,
-  },
-  type: {
-    type: DataTypes.ENUM('regular', 'midterm', 'final'),
-    allowNull: false,
-  },
-});
+  {
+    paranoid: false,
+  }
+);
 
 Year.hasMany(Score, { foreignKey: 'yearId' });
 Score.belongsTo(Year, { foreignKey: 'yearId' });

@@ -43,12 +43,16 @@ const router = createRouter({
     {
       path: '/teacher',
       name: 'teacher',
-      component: () => import('@/views/TheProfile.vue'),
       children: [
         {
           path: 'classes',
           name: 'teacher.classes',
           component: () => import('@/views/teacher/TeacherClasses.vue')
+        },
+        {
+          path: 'classes/scores',
+          name: 'teacher.classes.scores',
+          component: () => import('@/views/teacher/TeacherScores.vue')
         }
       ]
     },

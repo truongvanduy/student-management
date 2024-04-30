@@ -44,7 +44,6 @@ watchEffect(async () => {
     loading.value = false
   } catch (error) {
     console.error(error)
-    errorMessage.value = error.response.data.message
 
     loading.value = false
   }

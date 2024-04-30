@@ -1,4 +1,6 @@
 const Course = require('../models/course.model');
+const StudentClass = require('../models/student_class.model');
+const Class = require('../models/class.model');
 
 class ScoreService {
   _mainCourseIds = [1, 2, 3];
@@ -72,6 +74,9 @@ class ScoreService {
 
   calcAvgScores(groupScores) {
     return groupScores.map((group, index) => {
+      if (!group.regular.length) return NaN;
+      if (!group.midterm || !group.final) return NaN;
+
       const sumOfRegularScore = group.regular.reduce(
         (acc, cur) => acc + cur.score,
         0
@@ -90,10 +95,8 @@ class ScoreService {
             this._scoreWeights.final)
         ).toFixed(1)
       );
-      if (index !== 12) return average;
+      if (group.regular[0].courseId !== 12) return average;
       // Physical Education course calculation
-      console.log('avg:', average);
-      console.log('finalScore: ', finalScore);
       if (average >= 2 / 3 && finalScore >= 0.5) {
         return 1.0;
       }
@@ -114,6 +117,20 @@ class ScoreService {
       if (i !== 12) return avg;
       if (parseFloat(secondSemesterAvg) >= 0.67) return 1.0;
       return 0.0;
+    });
+  }
+
+  calcClassOverallAvgScores(firstSemesterAvgs, secondSemesterAvgs) {
+    return firstSemesterAvgs.map((firstSemesterAvg, i) => {
+      const secondSemesterAvg = secondSemesterAvgs[i];
+      const avg = parseFloat(
+        (
+          (firstSemesterAvg * this._semesterWeights.first +
+            secondSemesterAvg * this._semesterWeights.second) /
+          (this._semesterWeights.first + this._semesterWeights.second)
+        ).toFixed(1)
+      );
+      return avg;
     });
   }
 
@@ -215,6 +232,43 @@ class ScoreService {
         // },
       }
     }
+  }
+
+  // Teacher
+  groupScoreByStudent(scores, indexOf) {
+    scores = this._parseScores(scores);
+
+    const groupScores = [];
+
+    scores.forEach((score) => {
+      const index = indexOf.get(score.studentId);
+
+      // Initialize groupScores[index] if it doesn't exist
+      if (!groupScores[index]) {
+        groupScores[index] = {
+          studentId: score.studentId,
+          regular: [],
+        };
+      }
+
+      // Push score to the groupScores
+      if (score.type === 'regular') {
+        groupScores[index].regular.push(score);
+      } else {
+        groupScores[index][score.type] = score;
+      }
+    });
+
+    indexOf.forEach((index, studentId) => {
+      if (!groupScores[index]) {
+        groupScores[index] = {
+          studentId: studentId,
+          regular: [],
+        };
+      }
+    });
+
+    return groupScores;
   }
 }
 

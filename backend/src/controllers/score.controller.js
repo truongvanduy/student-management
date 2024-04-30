@@ -1,9 +1,12 @@
-const { where } = require('sequelize');
+const { where, Op } = require('sequelize');
 const ApiError = require('../api-error');
 const Course = require('../models/course.model');
 const Score = require('../models/score.model');
 const Year = require('../models/year.model');
 const scoreService = require('../services/score.service');
+const { sequelize } = require('../utils/db.util');
+const StudentClass = require('../models/student_class.model');
+const Class = require('../models/class.model');
 
 module.exports = {
   async show(req, res, next) {
@@ -135,4 +138,60 @@ module.exports = {
       );
     }
   },
+
+  async edit(req, res, next) {
+    console.log(req.query);
+    try {
+      const { yearId, semesterId, gradeId, classOrder, courseId } = req.query;
+
+      // Get number of students in the selected class
+      const selectedClass = await Class.findOne({
+        where: {
+          yearId: yearId,
+          gradeId: gradeId,
+          order: classOrder,
+        },
+        attributes: ['studentCount'],
+      });
+
+      const studentIds = await StudentClass.findAll({
+        attributes: ['studentId'],
+        where: {
+          yearId: yearId,
+          gradeId: gradeId,
+          classOrder: classOrder,
+        },
+        raw: true,
+      });
+
+      const scores = await Score.findAll({
+        where: {
+          studentId: {
+            [Op.in]: studentIds.map((student) => student.studentId),
+          },
+          yearId: yearId,
+          semesterId: semesterId,
+          courseId: courseId,
+        },
+        include: [
+          {
+            model: Course,
+            required: true,
+          },
+        ],
+      });
+
+      res.send(
+        scoreService.groupScoreByStudent(scores, selectedClass.studentCount)
+      );
+    } catch (error) {
+      return next(
+        new ApiError(
+          500,
+          `Error occurred while retrieving student scores: ${error}`
+        )
+      );
+    }
+  },
+  async update(req, res, next) {},
 };
