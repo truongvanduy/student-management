@@ -25,6 +25,11 @@ const routes = {
       name: 'Lớp bộ môn',
       icon: 'bar_chart',
       urlName: 'teacher.classes'
+    },
+    {
+      name: 'Lớp chủ nhiệm',
+      icon: 'school',
+      urlName: 'teacher.homeroom'
     }
   ],
   admin: [

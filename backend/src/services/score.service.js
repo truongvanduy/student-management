@@ -1,6 +1,7 @@
 const Course = require('../models/course.model');
 const StudentClass = require('../models/student_class.model');
 const Class = require('../models/class.model');
+const Score = require('../models/score.model');
 
 class ScoreService {
   _mainCourseIds = [1, 2, 3];
@@ -95,7 +96,7 @@ class ScoreService {
             this._scoreWeights.final)
         ).toFixed(1)
       );
-      if (group.regular[0].courseId !== 12) return average;
+      if (group.regular[0].courseId !== 13) return average;
       // Physical Education course calculation
       if (average >= 2 / 3 && finalScore >= 0.5) {
         return 1.0;
@@ -269,6 +270,29 @@ class ScoreService {
     });
 
     return groupScores;
+  }
+
+  async getStudentResult(studentId, yearId, semesterId) {
+    const scores = await Score.findAll({
+      where: {
+        studentId,
+        yearId,
+        semesterId,
+      },
+      raw: true,
+    });
+
+    const groupScores = await this.groupScoreByCourse(scores);
+    const semesterAvgScores = this.calcAvgScores(groupScores);
+    const semesterAvg = this.calcSemseterAvg(semesterAvgScores);
+    const title = this.getTitle(semesterAvgScores);
+    return { semesterAvgScores, semesterAvg, title };
+  }
+
+  avgScoresToStudentResult(semesterAvgScores) {
+    const semesterAvg = this.calcSemseterAvg(semesterAvgScores);
+    const title = this.getTitle(semesterAvgScores);
+    return { semesterAvgScores, semesterAvg, title };
   }
 }
 

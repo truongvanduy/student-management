@@ -53,6 +53,11 @@ const router = createRouter({
           path: 'classes/scores',
           name: 'teacher.classes.scores',
           component: () => import('@/views/teacher/TeacherScores.vue')
+        },
+        {
+          path: 'homeroom',
+          name: 'teacher.homeroom',
+          component: () => import('@/views/teacher/HomeroomIndex.vue')
         }
       ]
     },
