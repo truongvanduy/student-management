@@ -100,8 +100,8 @@ module.exports = {
 
       const students = studentIds.map((student) => ({
         id: student.studentId,
-        firstName: student['User.firstName'],
-        lastName: student['User.lastName'],
+        firstName: student['user.firstName'],
+        lastName: student['user.lastName'],
       }));
 
       const scores = await Score.findAll({

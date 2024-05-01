@@ -5,7 +5,6 @@ const { data, title } = defineProps(['data', 'title'])
 const context = ref(null)
 
 onMounted(async () => {
-  console.log(data)
   // eslint-disable-next-line no-unused-vars
   const myChart = await new Chart(context.value, {
     type: 'doughnut',

@@ -57,7 +57,30 @@ const router = createRouter({
         {
           path: 'homeroom',
           name: 'teacher.homeroom',
-          component: () => import('@/views/teacher/HomeroomIndex.vue')
+          component: () => import('@/views/teacher/homeroom/HomeroomIndex.vue'),
+          children: [
+            {
+              path: 'statistics',
+              name: 'teacher.homeroom.statistics',
+              component: () => import('@/views/teacher/homeroom/ResultStatistics.vue')
+            },
+            {
+              path: 'students',
+              name: 'teacher.homeroom.students',
+              component: () => import('@/views/teacher/homeroom/HomeroomStudents.vue')
+            },
+            {
+              path: 'conduct',
+              name: 'teacher.homeroom.conduct',
+              component: () => import('@/views/teacher/homeroom/ConductAssessment.vue')
+            }
+          ]
+        },
+        {
+          path: 'homeroom/students/:id/scores',
+          name: 'teacher.homeroom.scores',
+          component: () => import('@/views/teacher/homeroom/StudentScore.vue'),
+          props: true
         }
       ]
     },

@@ -3,62 +3,18 @@ import { computed, onBeforeMount, ref, watch } from 'vue'
 import { useSnackbar } from '@/stores/SnackbarStore'
 import getErrorMessage from '@/utils/getErrorMessage.util'
 import yearService from '@/services/year.service'
-import classService from '@/services/class.service'
 import homeroomService from '@/services/homeroom.service'
-import TheChart from './TheChart.vue'
+import { useRoute, useRouter } from 'vue-router'
 
 // Init state
 const loading = ref(true)
 const response = ref(null)
 const homeroomClass = ref(null)
 const filteredClass = ref()
-// const firstSemesterResults = computed(() => response.value?.firstSemesterResults)
-const results = computed(() => response.value?.results)
-const titles = ref(['Học kì I', 'Học kì II', 'Cả năm'])
-const chartDatas = computed(() => {
-  return results.value?.map((result) => {
-    const titleCount = {
-      'Học sinh Giỏi': 0,
-      'Học sinh Khá': 0,
-      'Học sinh Trung Bình': 0,
-      'Học sinh Yếu': 0
-    }
-
-    result.forEach((el) => {
-      if (titleCount[el.title.title]) {
-        titleCount[el.title.title]++
-      } else {
-        titleCount[el.title.title] = 1
-      }
-    })
-    console.log(titleCount)
-    const labels = []
-    const data = []
-    Object.entries(titleCount).forEach(([title, count]) => {
-      labels.push(title)
-      data.push(count)
-    })
-    return {
-      labels,
-      datasets: [
-        {
-          label: 'Số lượng học sinh',
-          data,
-          backgroundColor: [
-            'rgb(54, 162, 235)',
-            'rgb(75, 192, 192)',
-            'rgb(255, 205, 86)',
-            'rgb(255, 99, 132)',
-            'rgb(153, 102, 255)'
-          ]
-        }
-      ]
-    }
-  })
-})
 const years = ref([])
 const snackbar = useSnackbar()
-const selectedYear = defineModel('selectedYear')
+const selectedYear = ref(null)
+const route = useRoute()
 
 onBeforeMount(async () => {
   try {
@@ -73,56 +29,53 @@ onBeforeMount(async () => {
 
     homeroomClass.value = response.value.homeroomClass
     filteredClass.value = {
-      class: `${homeroomClass.value?.Grade?.gradeLevel}.${homeroomClass.value?.classOrder}`,
+      class: `${homeroomClass.value?.class?.Grade?.gradeLevel}.${homeroomClass.value?.classOrder}`,
       studentCount: homeroomClass.value?.class?.studentCount
     }
   } catch (error) {
     console.error(error)
     snackbar.show({
       type: 'error',
-      message: error.response.data.message || 'Có lỗi xảy ra'
-    })
-  }
-  loading.value = false
-})
-
-// Hanlde search
-
-async function updateStudentList() {
-  try {
-    loading.value = true
-
-    homeroomClass.value = await classService.getAll({
-      yearId: selectedYear.value
-    })
-  } catch (error) {
-    snackbar.show({
-      type: 'error',
       message: getErrorMessage(error)
     })
   }
   loading.value = false
+})
+
+const router = useRouter()
+
+const tabRoutes = computed(() => [
+  { name: 'teacher.homeroom.students', query: { yearId: selectedYear.value } },
+  { name: 'teacher.homeroom.statistics', query: { yearId: selectedYear.value } },
+  { name: 'teacher.homeroom.conduct', query: { yearId: selectedYear.value } }
+])
+const selectedTabIndex = ref(0)
+const handleTabChange = (e) => {
+  selectedTabIndex.value = e.target.activeTabIndex
 }
 
-// Handle actions
+watch(
+  [selectedTabIndex, selectedYear],
+  () => {
+    if (selectedYear.value === null) return
 
-// Trigger reload content on successful deletetion
-const reload = ref(false)
-
-watch([reload, selectedYear], async () => {
-  await updateStudentList()
-  reload.value = false
-})
+    router.push(tabRoutes.value[selectedTabIndex.value])
+  },
+  { immediate: true }
+)
 </script>
 
 <template>
+  <!-- Loading Progress Indicator -->
   <md-linear-progress
     v-if="loading && !response"
     indeterminate
   ></md-linear-progress>
+
+  <!-- Main content -->
   <div
     v-else
-    class="container flow"
+    class="container flow homeroom-container"
     style="--container-width: 80rem"
   >
     <h1 class="fs-2">Quản lý lớp học</h1>
@@ -150,20 +103,14 @@ watch([reload, selectedYear], async () => {
         <h3 class="fs-4">Lớp {{ filteredClass.class }}</h3>
         <p class="fs-5">Sĩ số: {{ filteredClass.studentCount }}</p>
       </div>
-      <div class="chart-list">
-        <TheChart
-          v-for="(chartData, index) in chartDatas"
-          :key="index"
-          :data="chartData"
-          :title="titles[index]"
-        />
-      </div>
-    </div>
 
-    <md-linear-progress
-      v-else
-      indeterminate
-    ></md-linear-progress>
+      <md-tabs @change="handleTabChange">
+        <md-primary-tab>Danh sách lớp</md-primary-tab>
+        <md-primary-tab>Kết quả học tập</md-primary-tab>
+        <md-primary-tab>Đánh giá hạnh kiểm</md-primary-tab>
+      </md-tabs>
+      <router-view />
+    </div>
   </div>
 </template>
 

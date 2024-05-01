@@ -59,9 +59,15 @@ tr:last-of-type td:last-of-type {
 
 // Solid table
 
-.table-solid {
-  & td:not(:first-of-type),
-  & th:not(:first-of-type) {
-    border-inline-start: 0;
+.table {
+  &-solid {
+    & td:not(:first-of-type),
+    & th:not(:first-of-type) {
+      border-inline-start: 0;
+    }
+  }
+  &-actions {
+    display: flex;
+    align-items: center;
   }
 }

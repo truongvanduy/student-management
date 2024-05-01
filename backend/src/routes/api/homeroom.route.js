@@ -8,4 +8,34 @@ homeroomRouter
   .route('/')
   .get(requireAuth, verifyRole('teacher'), teacherHomeroomController.index);
 
+homeroomRouter
+  .route('/statistics')
+  .get(
+    requireAuth,
+    verifyRole('teacher'),
+    teacherHomeroomController.getResultStatistics
+  );
+
+homeroomRouter
+  .route('/students')
+  .get(
+    requireAuth,
+    verifyRole('teacher'),
+    teacherHomeroomController.getStudents
+  );
+homeroomRouter
+  .route('/students/:id/scores')
+  .get(
+    requireAuth,
+    verifyRole('teacher'),
+    teacherHomeroomController.getStudentScores
+  );
+
+homeroomRouter
+  .route('/students/conducts')
+  .get(
+    requireAuth,
+    verifyRole('teacher'),
+    teacherHomeroomController.getConducts
+  );
 module.exports = homeroomRouter;

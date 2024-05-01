@@ -34,8 +34,8 @@ module.exports = async function initData(_req, _res, next) {
     // });
 
     // const studentData = require('../utils/data/student');
-    // const datas = await Student.bulkCreate(studentData);
-    // await Student.sync();
+    // const datas = await User.bulkCreate(studentData);
+    // await User.sync();
     // console.log('Student data has been initialized successfully.');
 
     // const courseData = [
@@ -108,16 +108,16 @@ module.exports = async function initData(_req, _res, next) {
     // Score.sync();
     // console.log('Score data has been initialized successfully.');
 
-    // await User.update(
-    //   {
-    //     placeOfBirth: 'Cần Thơ',
-    //   },
-    //   {
-    //     where: {
-    //       placeOfBirth: null,
-    //     },
-    //   }
-    // );
+    await User.update(
+      {
+        role: 'student',
+      },
+      {
+        where: {
+          role: null,
+        },
+      }
+    );
 
     // const teacher = await User.findOne({
     //   where: {

@@ -5,7 +5,7 @@ import getErrorMessage from '@/utils/getErrorMessage.util'
 import yearService from '@/services/year.service'
 import { translate } from '@/utils/translator.util'
 import classService from '@/services/class.service'
-import getFullNameUtil from '@/utils/getFullName.util'
+import { getFullName } from '@/utils/getFullName.util'
 import { useRouter } from 'vue-router'
 
 // Init state
@@ -18,7 +18,7 @@ const filteredClasses = computed(() => {
     return {
       course: classEl.course?.name || 'Chưa cập nhật',
       class: `${classEl?.class?.Grade?.gradeLevel}.${classEl?.classOrder}`,
-      homeroomTeacher: getFullNameUtil(teacher),
+      homeroomTeacher: getFullName(teacher),
       studentCount: classEl?.class?.studentCount,
       query: {
         classOrder: classEl.classOrder,

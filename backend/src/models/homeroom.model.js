@@ -8,7 +8,6 @@ const Homeroom = sequelize.define('homeroom', {
   gradeId: {
     type: DataTypes.INTEGER,
     allowNull: false,
-    primaryKey: true,
   },
   yearId: {
     type: DataTypes.INTEGER,
@@ -18,7 +17,6 @@ const Homeroom = sequelize.define('homeroom', {
   classOrder: {
     type: DataTypes.INTEGER,
     allowNull: false,
-    primaryKey: true,
   },
   teacherId: {
     type: DataTypes.INTEGER,

@@ -1,5 +1,11 @@
 <script setup>
 import MdIconButton from '@/components/buttons/MdIconButton.vue'
+defineProps({
+  haveContainer: {
+    type: Boolean,
+    default: true
+  }
+})
 import { useRouter } from 'vue-router'
 
 const router = useRouter()
@@ -8,8 +14,16 @@ const router = useRouter()
 <template>
   <div class="content-header">
     <MdIconButton @click="router.go(-1)">arrow_back</MdIconButton>
-    <div class="container">
+    <div
+      v-if="haveContainer"
+      class="container"
+    >
       <h1 class="fs-3">
+        <slot></slot>
+      </h1>
+    </div>
+    <div v-else>
+      <h1 class="fs-3 ml-15">
         <slot></slot>
       </h1>
     </div>

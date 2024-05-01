@@ -1,4 +1,4 @@
-export default (user) => {
+export function getFullName(user) {
   if (user && user?.firstName && user?.lastName) {
     return `${user?.lastName} ${user?.firstName}`
   }

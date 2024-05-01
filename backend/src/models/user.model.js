@@ -6,7 +6,7 @@ const sequence = function (id) {
   return 's' + String(id + 1).padStart(5, '0');
 };
 
-const User = sequelize.define('User', {
+const User = sequelize.define('user', {
   id: {
     type: DataTypes.INTEGER,
     primaryKey: true,
@@ -55,7 +55,8 @@ const User = sequelize.define('User', {
 });
 
 User.addHook('beforeCreate', async (user, options) => {
-  user.password = await hash_passwordUtil(user?.password || user.phoneNumber);
+  const password = user?.password || user.phoneNumber;
+  user.password = await hash_passwordUtil(password);
 });
 
 User.addHook('afterCreate', async (user, options) => {
