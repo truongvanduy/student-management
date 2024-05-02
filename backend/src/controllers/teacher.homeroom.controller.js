@@ -371,4 +371,30 @@ module.exports = {
       );
     }
   },
+
+  saveConducts: async (req, res, next) => {
+    const { conducts } = req.body;
+    if (!conducts) {
+      return next(new ApiError(400, 'Dữ liệu không hợp lệ'));
+    }
+    try {
+      await Promise.all(
+        conducts.map(async (conduct) => {
+          await Conduct.upsert(
+            {
+              ...conduct,
+            },
+            {
+              where: {
+                studentId: conduct.studentId,
+                semesterId: conduct.semesterId,
+                yearId: conduct.yearId,
+              },
+            }
+          );
+        })
+      );
+      res.send('Lưu hạnh kiểm thành công');
+    } catch (error) {}
+  },
 };
