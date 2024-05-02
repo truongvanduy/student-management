@@ -55,13 +55,6 @@ module.exports = {
                 model: Grade,
                 required: true,
               },
-              {
-                model: Homeroom,
-                include: {
-                  model: User,
-                  required: true,
-                },
-              },
             ],
           },
           {

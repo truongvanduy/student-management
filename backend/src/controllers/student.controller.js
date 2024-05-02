@@ -35,7 +35,7 @@ module.exports = {
 
       const response = {
         ...student,
-        className: `${studentClass.Grade.gradeLevel}.${studentClass.classOrder}`,
+        className: `${studentClass.grade.gradeLevel}.${studentClass.classOrder}`,
       };
 
       return res.send(response);

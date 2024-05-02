@@ -108,16 +108,28 @@ module.exports = async function initData(_req, _res, next) {
     // Score.sync();
     // console.log('Score data has been initialized successfully.');
 
-    await User.update(
-      {
-        role: 'student',
-      },
-      {
-        where: {
-          role: null,
-        },
-      }
-    );
+    // await User.update(
+    //   {
+    //     role: 'student',
+    //   },
+    //   {
+    //     where: {
+    //       role: null,
+    //     },
+    //   }
+    // );
+
+    // await User.create({
+    //   firstName: 'Tuấn',
+    //   lastName: 'Trần Anh',
+    //   dateOfBirth: '1995-04-09',
+    //   address: 'Cần Thơ',
+    //   phoneNumber: '077492533',
+    //   role: 'teacher',
+    //   password: 'teacher',
+    //   sex: male,
+    //   placeOfBirth: Cần Thơ,
+    // });
 
     // const teacher = await User.findOne({
     //   where: {
@@ -126,10 +138,18 @@ module.exports = async function initData(_req, _res, next) {
     // });
 
     // await Homeroom.create({
-    //   gradeId: 3,
+    //   gradeId: 2,
     //   yearId: 3,
     //   classOrder: 1,
-    //   teacherId: teacher.id,
+    //   teacherId: 234,
+    // });
+
+    // await TeacherClass.create({
+    //   teacherId: 204,
+    //   gradeId: 2,
+    //   yearId: 3,
+    //   classOrder: 1,
+    //   courseId: 10,
     // });
 
     return next();

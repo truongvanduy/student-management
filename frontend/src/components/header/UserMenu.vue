@@ -28,13 +28,15 @@ async function handleSignOut() {
 
 const menuItems = ref([
   {
-    name: 'Profile',
+    name: 'Thông tin cá nhân',
     icon: 'person',
     url: '#',
-    onClick: () => {}
+    onClick: () => {
+      router.replace({ name: 'profile' })
+    }
   },
   {
-    name: 'Sign Out',
+    name: 'Đăng xuất',
     icon: 'logout',
     url: '#',
     onClick: handleSignOut

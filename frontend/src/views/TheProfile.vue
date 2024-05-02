@@ -25,10 +25,10 @@ onMounted(async () => {
       { key: 'Email', value: student.value.email },
       {
         key: 'Số điện thoại',
-        value: student.value.phoneNumber,
-        hasAction: true,
-        actionName: 'Chỉnh sửa',
-        action: () => alert('Ai cho sửa')
+        value: student.value.phoneNumber
+        // hasAction: true,
+        // actionName: 'Chỉnh sửa',
+        // action: () => alert('Ai cho sửa')
       }
     ]
   } catch (error) {

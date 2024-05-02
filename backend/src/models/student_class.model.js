@@ -37,6 +37,9 @@ User.hasMany(StudentClass, { foreignKey: 'studentId' });
 StudentClass.belongsTo(Year, { foreignKey: 'yearId' });
 Year.hasMany(StudentClass, { foreignKey: 'yearId' });
 
+StudentClass.belongsTo(Class, { foreignKey: 'classOrder' });
+Class.hasMany(StudentClass, { foreignKey: 'classOrder' });
+
 StudentClass.addHook('afterCreate', async (studentClass, options) => {
   const studentCount = await StudentClass.count({
     where: {

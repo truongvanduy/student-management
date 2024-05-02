@@ -4,6 +4,7 @@ import courseService from '@/services/course.service'
 import yearService from '@/services/year.service'
 import { computed, onMounted, ref, watchEffect } from 'vue'
 import ScoreResult from '../components/score_view/ScoreResult.vue'
+import { getClassName } from '@/utils/class.util'
 
 const years = ref([])
 const activeYear = ref()
@@ -61,6 +62,13 @@ watchEffect(async () => {
       style="display: flex"
       class="mb-4"
     >
+      <h3
+        v-if="response._class"
+        class="fs-4"
+      >
+        Lớp {{ getClassName(response._class) }}
+      </h3>
+
       <!-- Year Selection -->
       <md-outlined-select
         v-if="years.length > 0"

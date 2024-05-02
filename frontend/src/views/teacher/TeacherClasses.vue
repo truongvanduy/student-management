@@ -7,6 +7,7 @@ import { translate } from '@/utils/translator.util'
 import classService from '@/services/class.service'
 import { getFullName } from '@/utils/getFullName.util'
 import { useRouter } from 'vue-router'
+import { getClassName } from '@/utils/class.util'
 
 // Init state
 const router = useRouter()
@@ -14,10 +15,10 @@ const loading = ref(true)
 const classes = ref([])
 const filteredClasses = computed(() => {
   return classes.value.map((classEl) => {
-    const teacher = classEl?.class?.homeroom?.User
+    const teacher = classEl?.class?.homeroom?.user
     return {
       course: classEl.course?.name || 'Chưa cập nhật',
-      class: `${classEl?.class?.Grade?.gradeLevel}.${classEl?.classOrder}`,
+      class: getClassName(classEl.class),
       homeroomTeacher: getFullName(teacher),
       studentCount: classEl?.class?.studentCount,
       query: {
@@ -95,7 +96,7 @@ watch([reload, selectedYear], async () => {
     v-else
     class="container flow"
   >
-    <h1 class="fs-2">Quản lý lớp học</h1>
+    <h1 class="fs-2">Quản lý lớp dạy</h1>
 
     <div class="facb">
       <!-- Year Selection -->
@@ -123,6 +124,7 @@ watch([reload, selectedYear], async () => {
       <thead>
         <tr>
           <th>Lớp</th>
+          <th>Môn học</th>
           <th>Sĩ số</th>
           <th>Giáo viên chủ nhiệm</th>
           <th></th>
@@ -134,13 +136,14 @@ watch([reload, selectedYear], async () => {
           :key="index"
         >
           <td class="text-center">{{ classEl.class }}</td>
+          <td class="text-center">{{ classEl.course }}</td>
           <td class="text-center">{{ translate(classEl.studentCount) }}</td>
           <td class="text-center">{{ classEl.homeroomTeacher }}</td>
           <td>
             <div class="student-row">
               <md-assist-chip
                 class="mx-auto"
-                label="Xem"
+                label="Cập nhật điểm số"
                 @click="() => handleViewClick(classEl.query)"
               ></md-assist-chip>
             </div>
@@ -154,7 +157,7 @@ watch([reload, selectedYear], async () => {
       v-else
       class="fs5"
     >
-      Không tìm thấy lớp học. Vui lòng thử lại với từ khóa khác.
+      Không tìm thấy lớp dạy.
     </div>
   </div>
 </template>

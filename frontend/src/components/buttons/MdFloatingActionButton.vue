@@ -43,6 +43,7 @@ defineProps({
 <style lang="scss" scoped>
 .fab {
   position: fixed;
+  z-index: 1;
   right: calc(2 * var(--content-margin));
   bottom: calc(2 * var(--content-margin));
 }

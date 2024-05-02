@@ -5,6 +5,7 @@ import classService from '@/services/class.service'
 import { useSnackbar } from '@/stores/SnackbarStore'
 import getErrorMessage from '@/utils/getErrorMessage.util'
 import ContentHeader from '@/components/ContentHeader.vue'
+import MdFloatingActionButton from '@/components/buttons/MdFloatingActionButton.vue'
 
 const activeSemester = ref(1)
 const route = useRoute()
@@ -120,23 +121,12 @@ async function handleSubmit() {
 </script>
 
 <template>
-  <ContentHeader>Điểm số</ContentHeader>
+  <ContentHeader>Cập nhật điểm số</ContentHeader>
   <!-- Submit button -->
   <div
     class="container score-view"
     style="--content-max-width: 80rem"
   >
-    <md-filled-button
-      class="mt-4 ml-auto"
-      @click="handleSubmit"
-    >
-      Cập nhật điểm
-    </md-filled-button>
-    <div
-      style="display: flex"
-      class="mb-4"
-    ></div>
-
     <!-- Semester tabs -->
     <md-tabs
       aria-label="Content to view"
@@ -265,15 +255,15 @@ async function handleSubmit() {
         </tr>
       </tbody>
     </table>
-
-    <!-- Submit button -->
-    <md-filled-button
-      class="mt-4 ml-auto"
-      @click="handleSubmit"
-    >
-      Cập nhật điểm
-    </md-filled-button>
   </div>
+
+  <!-- Submit button -->
+  <MdFloatingActionButton
+    icon="check"
+    label="Lưu thay đổi"
+    variant="primary"
+    @click="handleSubmit"
+  ></MdFloatingActionButton>
 </template>
 
 <style lang="scss" src="@/assets/scss/components/_table.scss"></style>

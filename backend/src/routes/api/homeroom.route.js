@@ -37,5 +37,10 @@ homeroomRouter
     requireAuth,
     verifyRole('teacher'),
     teacherHomeroomController.getConducts
+  )
+  .post(
+    requireAuth,
+    verifyRole('teacher'),
+    teacherHomeroomController.saveConducts
   );
 module.exports = homeroomRouter;

@@ -5,6 +5,7 @@ import getErrorMessage from '@/utils/getErrorMessage.util'
 import yearService from '@/services/year.service'
 import homeroomService from '@/services/homeroom.service'
 import { useRoute, useRouter } from 'vue-router'
+import { getClassName } from '@/utils/class.util'
 
 // Init state
 const loading = ref(true)
@@ -14,7 +15,6 @@ const filteredClass = ref()
 const years = ref([])
 const snackbar = useSnackbar()
 const selectedYear = ref(null)
-const route = useRoute()
 
 onBeforeMount(async () => {
   try {
@@ -29,7 +29,7 @@ onBeforeMount(async () => {
 
     homeroomClass.value = response.value.homeroomClass
     filteredClass.value = {
-      class: `${homeroomClass.value?.class?.Grade?.gradeLevel}.${homeroomClass.value?.classOrder}`,
+      class: getClassName(homeroomClass.value?.class),
       studentCount: homeroomClass.value?.class?.studentCount
     }
   } catch (error) {
@@ -78,7 +78,7 @@ watch(
     class="container flow homeroom-container"
     style="--container-width: 80rem"
   >
-    <h1 class="fs-2">Quản lý lớp học</h1>
+    <h1 class="fs-2">Quản lý lớp chủ nhiệm</h1>
 
     <div class="facb">
       <!-- Year Selection -->

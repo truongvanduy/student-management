@@ -177,7 +177,7 @@ watch([reload, selectedYear], async () => {
             class="text-center"
           >
             {{
-              student.student_classes[0].Grade.gradeLevel +
+              student.student_classes[0].grade.gradeLevel +
               '.' +
               student.student_classes[0].classOrder
             }}

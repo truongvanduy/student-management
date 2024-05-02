@@ -31,7 +31,7 @@ const user = computed(() => JSON.parse(localStorage.getItem('user')))
       </div>
     </div>
     <!-- Search -->
-    <SearchBar />
+    <!-- <SearchBar /> -->
     <!-- End -->
     <div class="header-end">
       <!-- Sign in button -->

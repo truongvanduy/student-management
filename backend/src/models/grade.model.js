@@ -1,6 +1,6 @@
 const { sequelize, DataTypes } = require('../utils/db.util');
 
-const Grade = sequelize.define('Grade', {
+const Grade = sequelize.define('grade', {
   id: {
     type: DataTypes.INTEGER,
     primaryKey: true,

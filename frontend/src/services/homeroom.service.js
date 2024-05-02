@@ -24,5 +24,8 @@ class StudentService {
   async getConducts(query) {
     return (await this.api.get(`/students/conducts`, { params: query })).data
   }
+  async saveConducts(conducts) {
+    return (await this.api.post(`/students/conducts`, conducts)).data
+  }
 }
 export default new StudentService()
