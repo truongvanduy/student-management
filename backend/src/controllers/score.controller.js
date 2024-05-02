@@ -7,6 +7,7 @@ const scoreService = require('../services/score.service');
 const { sequelize } = require('../utils/db.util');
 const StudentClass = require('../models/student_class.model');
 const Class = require('../models/class.model');
+const Grade = require('../models/grade.model');
 
 module.exports = {
   async show(req, res, next) {
@@ -36,6 +37,26 @@ module.exports = {
       if (yearArray.length === 0 || !yearArray.includes(parseInt(yearId))) {
         return next(new ApiError(404, 'Năm học không hợp lệ'));
       }
+
+      const studentClass = await StudentClass.findOne({
+        where: {
+          yearId: parseInt(yearId),
+          studentId: student.id,
+        },
+        include: [
+          {
+            model: Class,
+            required: true,
+            include: [
+              {
+                model: Grade,
+                required: true,
+              },
+            ],
+          },
+        ],
+      });
+      const _class = studentClass?.class;
 
       // Create filter for querying student's scores
       const filter = {
@@ -74,6 +95,7 @@ module.exports = {
         const firstSemesterTitle = scoreService.getTitle(firstSemesterAvgs);
 
         res.send({
+          _class,
           groupScores,
           firstSemesterAvgs,
           firstSemesterAvg,
@@ -117,6 +139,7 @@ module.exports = {
         const overallTitle = scoreService.getTitle(overallAvgs);
 
         res.send({
+          _class,
           firstSemesterAvg,
           firstSemesterAvgs,
           firstSemesterTitle,
@@ -140,7 +163,6 @@ module.exports = {
   },
 
   async edit(req, res, next) {
-    console.log(req.query);
     try {
       const { yearId, semesterId, gradeId, classOrder, courseId } = req.query;
 
